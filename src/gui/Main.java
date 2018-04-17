@@ -10,7 +10,9 @@ public class Main extends Application {
     public void start(Stage primaryStage) {
         primaryStage.setTitle("PATH FINDING ON SQUARED GRID");
         ControlPanel controlPanel = new ControlPanel();
-        primaryStage.setScene(new Scene(controlPanel));
+        Scene scene = new Scene(controlPanel);
+        scene.getStylesheets().add("gui/css/main.css");
+        primaryStage.setScene(scene);
         primaryStage.setOnCloseRequest(e -> controlPanel.getStageForGraph().close());
         primaryStage.show();
     }

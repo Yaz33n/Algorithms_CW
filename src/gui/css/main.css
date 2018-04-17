@@ -1,0 +1,14 @@
+.btnReset {
+    -fx-font-family: "System";
+    -fx-font-size: 11.0;
+    -fx-text-fill: white;
+    -fx-font-weight: bold;
+    -fx-pref-height: 28;
+    -fx-pref-width: 55;
+    -fx-background-color: red;
+}
+
+.btnReset:hover {
+    -fx-text-fill: white;
+    -fx-background-color: deeppink;
+}

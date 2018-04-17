@@ -26,7 +26,6 @@ public class SquaredGrid extends AnchorPane {
     private GridPane gridPane;
     private int[][] graph;
     private ImageView actualMap;
-
     private Vector<Rectangle> gridBoxes;
     private Vector<Text> gridNumbers, graphWeight;
     private double gridWidthAndHeight, rowMinAndPrefHeight, colMinAndPrefWidth, recDimensions;
@@ -203,7 +202,7 @@ public class SquaredGrid extends AnchorPane {
             getChildren().remove(gridPane);
             getChildren().add(actualMap);
         } else {
-            if (actualMap != null) {
+            if (!getChildren().contains(gridPane)) {
                 getChildren().remove(actualMap);
                 getChildren().add(gridPane);
             }

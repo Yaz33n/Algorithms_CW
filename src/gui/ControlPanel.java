@@ -45,7 +45,7 @@ public class ControlPanel extends AnchorPane {
                 lblResult, resultText);
 
         this.grid = new SquaredGrid(this, ControlPanel.graph,
-                /* Doubling Hypothesis value 1 is default*/3); // Creating the grid
+                /* Doubling Hypothesis value 1 is default*/1); // Creating the grid
         System.out.println(graph.length);
 
         stageForGraph = new Stage(StageStyle.DECORATED);
@@ -120,6 +120,7 @@ public class ControlPanel extends AnchorPane {
 
         this.toggleGMetrics = new ToggleGroup(); // Creates a toggle group for metrics
         this.toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
+        this.rbManhattan.setSelected(true); // Initial metric
 
     }
 
@@ -151,7 +152,7 @@ public class ControlPanel extends AnchorPane {
 
         this.resultText = new TextArea("No Results Yet!");
         this.resultText.setPrefSize(538.0, 74.0);
-        this.resultText.setDisable(true);
+        this.resultText.setEditable(false);
         this.resultText.setLayoutX(30.0);
         this.resultText.setLayoutY(363.0);
 
@@ -202,15 +203,13 @@ public class ControlPanel extends AnchorPane {
     private void initButtons() {
 
         this.btnReset = new Button("RESET");
-        this.btnReset.setFont(new Font("System Bold", 11.0));
-        this.btnReset.setTextFill(Color.GRAY);
-        this.btnReset.setLayoutX(512.0);
+        this.btnReset.getStyleClass().add("btnReset");
+        this.btnReset.setLayoutX(509.0);
         this.btnReset.setLayoutY(56.0);
-        this.btnReset.setPrefSize(54.0, 28.0);
 
         this.btnFSP = new Button("FIND SHORTEST PATH");
         this.btnFSP.setFont(new Font("System Bold", 18.0));
-        this.btnFSP.setTextFill(Color.GRAY);
+        this.btnFSP.setTextFill(Color.DARKGRAY);
         this.btnFSP.setLayoutX(176.0);
         this.btnFSP.setLayoutY(258.0);
         this.btnFSP.setPrefSize(246.0, 42.0);
@@ -257,6 +256,11 @@ public class ControlPanel extends AnchorPane {
         });
 
     }
+
+//    //        int sX = Integer.parseInt(menuView.getTxtSourceX().getText());
+////        int sY = Integer.parseInt(menuView.getTxtSourceY().getText());
+////        int tX = Integer.parseInt(menuView.getTxtTargetX().getText());
+////        int tY = Integer.parseInt(menuView.getTxtTargetY().getText());
 
     public TextField getTxtSourceX() {
         return txtSourceX;
