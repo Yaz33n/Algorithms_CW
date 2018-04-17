@@ -203,7 +203,7 @@ public class ControlPanel extends AnchorPane {
     private void initButtons() {
 
         this.btnReset = new Button("RESET");
-        this.btnReset.getStyleClass().add("btnReset");
+        this.btnReset.setId("btnReset");
         this.btnReset.setLayoutX(509.0);
         this.btnReset.setLayoutY(56.0);
 

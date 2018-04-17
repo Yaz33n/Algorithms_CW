@@ -8,11 +8,15 @@ public class Main extends Application {
 
     @Override
     public void start(Stage primaryStage) {
-        primaryStage.setTitle("PATH FINDING ON SQUARED GRID");
+        // Creates a new control panel
         ControlPanel controlPanel = new ControlPanel();
+        // Sets the control panel to the scene
         Scene scene = new Scene(controlPanel);
+        // Adding the stylesheet for styling
         scene.getStylesheets().add("gui/css/main.css");
-        primaryStage.setScene(scene);
+
+        primaryStage.setTitle("PATH FINDING ON SQUARED GRID");
+        primaryStage.setScene(scene);// Sets the scene
         primaryStage.setOnCloseRequest(e -> controlPanel.getStageForGraph().close());
         primaryStage.show();
     }
