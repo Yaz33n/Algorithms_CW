@@ -111,18 +111,18 @@ public class SquaredGrid extends AnchorPane {
 
                         if (e.getButton() == MouseButton.PRIMARY) {
                             if (graph[row][col] != 0) { // Checking if the node is blocked
-                                controlPanelView.getTxtSourceX().setText(String.valueOf(row));
-                                controlPanelView.getTxtSourceY().setText(String.valueOf(col));
+                                controlPanelView.getTxtSourceY().setText(String.valueOf(row));
+                                controlPanelView.getTxtSourceX().setText(String.valueOf(col));
                             } else {
-                                showAlert("Source Node blocked!", "The Node " + row + "," + col
+                                showAlert("Source Node blocked!", "The Node col: " + col + ", row: " + row
                                         + " is blocked. You cannot set this as your Source destination");
                             }
                         } else if (e.getButton() == MouseButton.SECONDARY) {
                             if (graph[row][col] != 0) { // Checking if the node is blocked
-                                controlPanelView.getTxtTargetX().setText(String.valueOf(row));
-                                controlPanelView.getTxtTargetY().setText(String.valueOf(col));
+                                controlPanelView.getTxtTargetY().setText(String.valueOf(row));
+                                controlPanelView.getTxtTargetX().setText(String.valueOf(col));
                             } else {
-                                showAlert("Target Node blocked!", "The Node " + row + "," + col
+                                showAlert("Target Node blocked!", "The Node col: " + col + ", row: " + row
                                         + " is blocked. You cannot set this as your Target destination");
                             }
                         }
@@ -212,16 +212,21 @@ public class SquaredGrid extends AnchorPane {
         }
     }
 
-    public void colorBoxes(List<Node> finalPath) {
-
+    public void drawPath(List<Node> finalPath) {
         for (Node n : finalPath) {
-            Rectangle p = new Rectangle(recDimensions, recDimensions);
-            p.setStroke(Color.WHITE);
+            Rectangle p = new Rectangle(recDimensions / 1.3, recDimensions / 1.3);
+            p.setStroke(Color.BLACK);
             p.setFill(Color.GREEN);
             System.out.println(n.getYPos() + ", " + n.getXPos());
-            this.gridPane.add(p, n.getYPos(), n.getXPos());
+            this.gridPane.add(p, n.getXPos(), n.getYPos());
         }
+    }
 
+    public void colorNeighbours(int row, int col) {
+        Rectangle p = new Rectangle(recDimensions / 1.2, recDimensions / 1.2);
+        p.setStroke(Color.BLACK);
+        p.setFill(Color.RED);
+        this.gridPane.add(p, col, row);
     }
 
     // Gets the Monochrome version of colors

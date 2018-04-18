@@ -21,9 +21,9 @@ public class Node {
 
     private List<Node> neighbours; // Neighbours of this node.
 
-    Node(int xPos, int yPos, boolean blocked) {
-        this.xPos = xPos;
+    Node(int yPos, int xPos, boolean blocked) {
         this.yPos = yPos;
+        this.xPos = xPos;
         this.blocked = blocked;
         this.neighbours = new ArrayList<>();
     }

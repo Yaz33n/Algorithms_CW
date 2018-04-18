@@ -1,6 +1,9 @@
 package algo;
 
+import gui.SquaredGrid;
+
 import java.util.*;
+import java.util.logging.Logger;
 
 public class AStarAlgorithm {
 
@@ -14,7 +17,7 @@ public class AStarAlgorithm {
         NORTH, EAST, SOUTH, WEST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST
     }
 
-    private int targetXPos, targetYPos, sourceXPos, sourceYPos; // sX, sY, tX, tY
+    private int sourceYPos, sourceXPos, targetYPos, targetXPos; // Row|Col Row|Col
     private Heuristic selectedMetric; // User selected :: distance based metric calculation method
     private int[][] graph; // Skeleton graph with weights
     private Node[][] matrix; // Node Matrix to holdall the node objects.
@@ -23,16 +26,33 @@ public class AStarAlgorithm {
     private Set<Node> closedSet; // Closed Set stores all the evaluated nodes.
     private List<Node> finalPathNodes; // Stores the final backtracked path.
 
-    public AStarAlgorithm(int[][] graph, int sXPos, int sYPos, int tXPos, int tYPos, Heuristic sMetric) {
+    SquaredGrid grid;
+
+    public AStarAlgorithm(int[][] graph, int sYPos /*Row*/, int sXPos/*Col*/,
+                          int tYPos/*Row*/, int tXPos/*Col*/, Heuristic sMetric, SquaredGrid grid) {
         this.graph = graph;
-        this.sourceXPos = sXPos;
         this.sourceYPos = sYPos;
-        this.targetXPos = tXPos;
+        this.sourceXPos = sXPos;
         this.targetYPos = tYPos;
+        this.targetXPos = tXPos;
         this.selectedMetric = sMetric;
+        this.grid = grid;
 
         // Sorted by Ascending order of fCost
-        openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
+        openSet = new PriorityQueue<>(new Comparator<Node>() {
+
+            //overriding the compare method to compare two nodes from the fCost
+            @Override
+            public int compare(Node current, Node next) {
+                if (current.getFCost() < next.getFCost()) {
+                    return -1;
+                } else if (current.getFCost() > next.getFCost()) {
+                    return 1;
+                } else {
+                    return 0;
+                }
+            }
+        });
         closedSet = new HashSet<>();
         finalPathNodes = new ArrayList<>();
 
@@ -44,15 +64,16 @@ public class AStarAlgorithm {
 
         // Create the matrix array with the same size of graph (x, y)
         matrix = new Node[graph.length][graph.length];
-        for (int x = 0; x < graph.length; x++) {
-            for (int y = 0; y < graph[x].length; y++) {
+
+        for (int y = 0; y < graph.length; y++) {
+            for (int x = 0; x < graph[y].length; x++) {
                 // Creates a new node with x, y coordinates and the blocked status.
-                Node node = new Node(x, y, graph[x][y] == 0);
+                Node node = new Node(y, x, graph[y][x] == 0);
                 // Set the heuristic value from this node to the end node.
                 node.setHCost(getHeuristicVal(node, selectedMetric));
                 // Sets the node weight as given in the actual map.
-                node.setNodeWeight(graph[x][y]);
-                matrix[x][y] = node /* Adds the newly created node (x,y)*/;
+                node.setNodeWeight(graph[y][x]);
+                matrix[y][x] = node /* Adds the newly created node (x,y)*/;
             }
         }
     }
@@ -60,16 +81,16 @@ public class AStarAlgorithm {
     private void addNeighbours() {
 
         for (Node[] r /*Each Row*/: matrix) {
-            for (Node n /*Each node in Row*/: r) {
+            for (Node n /*Each node in row (current col)*/: r) {
                 /*Cycle through each direction*/
                 for (Direction d : Direction.values()) {
-                    int[] dir = getDirectionXY(n/*Check Node*/, d/*Direction*/);
+                    int[] dir = getDirectionYX(n/*Check Node*/, d/*Direction*/);
                     try {
                         // Aggressively throws IndexOutOfBoundsException
                         n.addNeighbours(matrix[dir[0 /*Row*/]][dir[1 /*Col*/]]);
                     } catch (IndexOutOfBoundsException e) {
-//                        Logger.getLogger(getClass().getName())
-//                                .warning("INDEX OUT-OF-RANGE " + d.toString() + " | " + e.getMessage());
+                        Logger.getLogger(getClass().getName())
+                                .warning("INDEX OUT-OF-RANGE " + d.toString() + " | " + e.getMessage());
                     }
                 }
             }
@@ -78,8 +99,8 @@ public class AStarAlgorithm {
 
     public void findShortestPath() {
 
-        Node startNode = matrix[sourceXPos][sourceYPos]; // Find and assign the Source Node
-        Node endNode = matrix[targetXPos][targetYPos]; // Find and assign the Target Node
+        Node startNode = matrix[sourceYPos][sourceXPos]; // Find and assign the Source Node
+        Node endNode = matrix[targetYPos][targetXPos]; // Find and assign the Target Node
 
         startNode.setGCost(0); // The cost of going from Source to Source is zero.
         startNode.setParent(null); // Setting the parent as null because this is the sourcePos
@@ -105,10 +126,12 @@ public class AStarAlgorithm {
             // Get the current node neighbours and check all
             for (Node neighbour : currentNode.getNeighbours()) {
                 if (!neighbour.isVisited() && !neighbour.isBlocked() && !closedSet.contains(neighbour)) {
+
+                    grid.colorNeighbours(neighbour.getYPos(), neighbour.getXPos());
                     /*Get the CurrentNodeGCost and and add the Next Node Weight as the Distance*/
                     final double tentativeGScore = currentNode.getGCost() + neighbour.getNodeWeight();
                     /*The new F cost will be the past nodes' GScore + the neighbours distance from the target*/
-                    final double newFCost = tentativeGScore + neighbour.getHCost();
+                    final double newFCost = neighbour.getGCost() + neighbour.getHCost();
 //                    if (!openSet.contains(neighbour)) {
 //                        openSet.add(neighbour);
 //                    } else if (newFCost < neighbour.getGCost()) {
@@ -124,9 +147,9 @@ public class AStarAlgorithm {
                         continue;
                     }
 
-                    neighbour.setGCost(tentativeGScore);
-                    neighbour.setHCost(newFCost);
                     neighbour.setParent(currentNode);
+                    neighbour.setGCost(tentativeGScore);
+                    neighbour.setFCost(newFCost);
                 }
             }
         }
@@ -143,28 +166,29 @@ public class AStarAlgorithm {
         }
     }
 
-    private int[] getDirectionXY(Node node, Direction direction) {
+    /*Y is the ROW X is the column*/
+    private int[] getDirectionYX(Node node, Direction direction) {
 
         /* Current Node X and Y Positions in the Matrix */
-        int cNXPos = node.getXPos(), cNYPos = node.getYPos();
+        int rowYPos = node.getYPos(), colXPos = node.getXPos();
 
         switch (direction) {
             case NORTH:
-                return new int[]{--cNXPos, cNYPos};
+                return new int[]{rowYPos - 1, colXPos};
             case EAST:
-                return new int[]{cNXPos, ++cNYPos};
+                return new int[]{rowYPos, colXPos + 1};
             case SOUTH:
-                return new int[]{++cNXPos, cNYPos};
+                return new int[]{rowYPos + 1, colXPos};
             case WEST:
-                return new int[]{cNXPos, --cNYPos};
+                return new int[]{rowYPos, colXPos - 1};
             case NORTH_WEST:
-                return new int[]{--cNXPos, --cNYPos};
+                return new int[]{rowYPos - 1, colXPos - 1};
             case NORTH_EAST:
-                return new int[]{--cNXPos, ++cNYPos};
+                return new int[]{rowYPos - 1, colXPos + 1};
             case SOUTH_EAST:
-                return new int[]{++cNXPos, ++cNYPos};
+                return new int[]{rowYPos + 1, colXPos + 1};
             case SOUTH_WEST:
-                return new int[]{++cNXPos, --cNYPos};
+                return new int[]{rowYPos + 1, colXPos - 1};
             default:
                 return new int[]{-1 /*If No Direction*/, -1};
         }

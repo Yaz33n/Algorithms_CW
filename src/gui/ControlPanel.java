@@ -14,7 +14,7 @@ import javafx.stage.StageStyle;
 public class ControlPanel extends AnchorPane {
 
     private Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
-    private TextField txtSourceX, txtSourceY, txtTargetX, txtTargetY;
+    private TextField txtSourceY, txtSourceX, txtTargetY, txtTargetX;
     private TextArea resultText;
     private ToggleGroup toggleGMetrics;
     private RadioButton rbManhattan, rbChebyshev, rbEuclidean;
@@ -126,29 +126,29 @@ public class ControlPanel extends AnchorPane {
 
     private void initTextBoxes() {
 
-        this.txtSourceX = new TextField();
-        this.txtSourceX.setPromptText("X");
-        this.txtSourceX.setLayoutX(178.0);
-        this.txtSourceX.setLayoutY(100.0);
-        this.txtSourceX.setPrefSize(47.0, 28.0);
-
         this.txtSourceY = new TextField();
-        this.txtSourceY.setPromptText("Y");
-        this.txtSourceY.setLayoutX(231.0);
+        this.txtSourceY.setPromptText("rY");
+        this.txtSourceY.setLayoutX(178.0);
         this.txtSourceY.setLayoutY(100.0);
         this.txtSourceY.setPrefSize(47.0, 28.0);
 
-        this.txtTargetX = new TextField();
-        this.txtTargetX.setPromptText("X");
-        this.txtTargetX.setLayoutX(463.0);
-        this.txtTargetX.setLayoutY(100.0);
-        this.txtTargetX.setPrefSize(47.0, 28.0);
+        this.txtSourceX = new TextField();
+        this.txtSourceX.setPromptText("cX");
+        this.txtSourceX.setLayoutX(231.0);
+        this.txtSourceX.setLayoutY(100.0);
+        this.txtSourceX.setPrefSize(47.0, 28.0);
 
         this.txtTargetY = new TextField();
-        this.txtTargetY.setPromptText("Y");
-        this.txtTargetY.setLayoutX(516.0);
+        this.txtTargetY.setPromptText("rY");
+        this.txtTargetY.setLayoutX(463.0);
         this.txtTargetY.setLayoutY(100.0);
         this.txtTargetY.setPrefSize(47.0, 28.0);
+
+        this.txtTargetX = new TextField();
+        this.txtTargetX.setPromptText("cX");
+        this.txtTargetX.setLayoutX(516.0);
+        this.txtTargetX.setLayoutY(100.0);
+        this.txtTargetX.setPrefSize(47.0, 28.0);
 
         this.resultText = new TextArea("No Results Yet!");
         this.resultText.setPrefSize(538.0, 74.0);
@@ -258,9 +258,10 @@ public class ControlPanel extends AnchorPane {
             int tX = Integer.parseInt(txtTargetX.getText());
             int tY = Integer.parseInt(txtTargetY.getText());
 
+            System.out.println(sY + " " + sX + " | " + tY + " " + tX);
             AStarAlgorithm.Heuristic type;
 
-            if(rbManhattan.isSelected()) {
+            if (rbManhattan.isSelected()) {
                 type = AStarAlgorithm.Heuristic.MANHATTAN;
             } else if (rbEuclidean.isSelected()) {
                 type = AStarAlgorithm.Heuristic.EUCLIDEAN;
@@ -271,13 +272,18 @@ public class ControlPanel extends AnchorPane {
             System.out.println(type);
 
             long startTime_Nano = System.nanoTime();
-            AStarAlgorithm as = new AStarAlgorithm(Main.graph, sX, sY, tX, tY, type);
+            AStarAlgorithm as = new AStarAlgorithm(Main.graph, sY, sX, tY, tX, type, grid);
             as.findShortestPath();
             long elapsedTime = (System.nanoTime() - startTime_Nano) / 1000000;
 
-            System.out.println("Elapsed Time: " + elapsedTime);
-            System.out.println("Final G Cost: " + as.getMatrix()[tX][tY].getGCost());
-            grid.colorBoxes(as.getFinalPathNodes());
+            resultText.setText("Elapsed Time: " + elapsedTime + "ms" + "\n"
+                    + "Final G Cost: " + as.getMatrix()[tX][tY].getGCost());
+
+            for (Node n : as.getMatrix()[0][0].getNeighbours()) {
+                System.out.println(n.getXPos() + " " + n.getYPos());
+            }
+
+            grid.drawPath(as.getFinalPathNodes());
 
         });
 
