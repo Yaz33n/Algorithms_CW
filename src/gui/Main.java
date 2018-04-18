@@ -1,13 +1,14 @@
 package gui;
 
 import algo.AStarAlgorithm;
+import algo.Node;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main extends Application {
+public class Main {
 
-    @Override
+//    @Override
     public void start(Stage primaryStage) {
         // Creates a new control panel
         ControlPanel controlPanel = new ControlPanel();
@@ -24,9 +25,14 @@ public class Main extends Application {
 
     public static void main(String[] args) {
 //        launch(args);
-        AStarAlgorithm as  = new AStarAlgorithm(graph,
-                0,0,19,19, AStarAlgorithm.Heuristic.MANHATTAN);
-        as.printMatrix();
+        AStarAlgorithm as = new AStarAlgorithm(graph, 0, 0, 4, 7,
+                AStarAlgorithm.Heuristic.MANHATTAN);
+        as.findShortestPath();
+
+        for (Node n : as.getFinalPathNodes()) {
+            System.out.println("V     " + n);
+        }
+
     }
 
     public static final int[][] graph = new int[][]{

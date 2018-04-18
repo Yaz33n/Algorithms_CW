@@ -1,9 +1,10 @@
 package algo;
 
-import java.util.TreeSet;
-import java.util.Vector;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Objects;
 
-class Node {
+public class Node {
 
     private Node parent; // The parent of this node
     private boolean blocked; // The node viability status
@@ -18,13 +19,13 @@ class Node {
     private int xPos; // The row number of this node in the graph (Matrix)
     private int yPos; // The column number of this node in the graph (Matrix)
 
-    private Vector<Node> neighbours; // Neighbours of this node.
+    private List<Node> neighbours; // Neighbours of this node.
 
     Node(int xPos, int yPos, boolean blocked) {
         this.xPos = xPos;
         this.yPos = yPos;
         this.blocked = blocked;
-        this.neighbours = new Vector<>();
+        this.neighbours = new ArrayList<>();
     }
 
     public void addNeighbours(Node neighbour) {
@@ -52,7 +53,7 @@ class Node {
     }
 
     public double getFCost() {
-        return fCost;
+        return (gCost + hCost);
     }
 
     public double getNodeWeight() {
@@ -67,7 +68,7 @@ class Node {
         return yPos;
     }
 
-    public Vector<Node> getNeighbours() {
+    public List<Node> getNeighbours() {
         return neighbours;
     }
 
@@ -79,22 +80,46 @@ class Node {
         this.nodeWeight = nodeWeight;
     }
 
+    public void setGCost(double gCost) {
+        this.gCost = gCost;
+    }
+
+    public void setParent(Node parent) {
+        this.parent = parent;
+    }
+
+    public void setVisited(boolean visited) {
+        this.visited = visited;
+    }
+
     @Override
-    public int hashCode() {
-        return java.util.Objects.hash(parent, blocked, visited, gCost, hCost, fCost, nodeWeight, xPos, yPos);
+    public boolean equals(Object o) {
+        if (this == o) return true;
+        if (o == null || getClass() != o.getClass()) return false;
+        Node node = (Node) o;
+        return blocked == node.blocked &&
+                visited == node.visited &&
+                Double.compare(node.gCost, gCost) == 0 &&
+                Double.compare(node.hCost, hCost) == 0 &&
+                Double.compare(node.fCost, fCost) == 0 &&
+                Double.compare(node.nodeWeight, nodeWeight) == 0 &&
+                xPos == node.xPos &&
+                yPos == node.yPos &&
+                Objects.equals(parent, node.parent) &&
+                Objects.equals(neighbours, node.neighbours);
     }
 
     @Override
     public String toString() {
-        return "Node [" +
-                "  P=" + parent +
-                ", B=" + blocked +
-                ", V=" + visited +
-                ", G=" + gCost +
-                ", H=" + hCost +
-                ", F=" + (gCost + hCost) +
-                ", W=" + nodeWeight +
-                ", gX=" + xPos +
-                ", gY=" + yPos + "  ]";
+        return "Node{" +
+                "  parent=" + parent +
+                ", blocked=" + blocked +
+                ", visited=" + visited +
+                ", gCost=" + gCost +
+                ", hCost=" + hCost +
+                ", fCost=" + fCost +
+                ", nodeWeight=" + nodeWeight +
+                ", xPos=" + xPos +
+                ", yPos=" + yPos + "  }";
     }
 }
