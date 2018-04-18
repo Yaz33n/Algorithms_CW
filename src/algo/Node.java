@@ -53,7 +53,8 @@ public class Node {
     }
 
     public double getFCost() {
-        return (gCost + hCost);
+        fCost = (gCost + hCost);
+        return fCost;
     }
 
     public double getNodeWeight() {

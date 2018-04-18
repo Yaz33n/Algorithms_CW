@@ -279,9 +279,9 @@ public class ControlPanel extends AnchorPane {
             resultText.setText("Elapsed Time: " + elapsedTime + "ms" + "\n"
                     + "Final G Cost: " + as.getMatrix()[tX][tY].getGCost());
 
-            for (Node n : as.getMatrix()[0][0].getNeighbours()) {
-                System.out.println(n.getXPos() + " " + n.getYPos());
-            }
+//            for (Node n : as.getMatrix()[19][0].getNeighbours()) {
+//                System.out.println(n.getYPos() + " " + n.getXPos());
+//            }
 
             grid.drawPath(as.getFinalPathNodes());
 

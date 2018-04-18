@@ -62,7 +62,7 @@ public class AStarAlgorithm {
 
     private void initNodeMatrix() {
 
-        // Create the matrix array with the same size of graph (x, y)
+        // Create the matrix array with the same size of graph (y,x)
         matrix = new Node[graph.length][graph.length];
 
         for (int y = 0; y < graph.length; y++) {
@@ -73,7 +73,7 @@ public class AStarAlgorithm {
                 node.setHCost(getHeuristicVal(node, selectedMetric));
                 // Sets the node weight as given in the actual map.
                 node.setNodeWeight(graph[y][x]);
-                matrix[y][x] = node /* Adds the newly created node (x,y)*/;
+                matrix[y][x] = node /* Adds the newly created node (y,x)*/;
             }
         }
     }
@@ -117,7 +117,7 @@ public class AStarAlgorithm {
 
             /*Checks whether the current looking node is the destination/target node*/
             if (currentNode.equals(endNode) || currentNode.getHCost() == 0) {
-                System.out.println("Reached To The End"); // Debug Purposes
+                System.out.println("Reached To The End"); // For Debug Purposes
                 closedSet.add(currentNode); // Add to the closed set
                 backtrackToOrigin(currentNode); // Get the original shortest path
                 break; // Break the entire loop
@@ -144,6 +144,7 @@ public class AStarAlgorithm {
                     if (!openSet.contains(neighbour)) {
                         openSet.add(neighbour);
                     } else if (newFCost >= neighbour.getGCost()) {
+                        // Bad Move
                         continue;
                     }
 
