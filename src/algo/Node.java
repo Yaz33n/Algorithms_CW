@@ -1,5 +1,8 @@
 package algo;
 
+import java.util.TreeSet;
+import java.util.Vector;
+
 class Node {
 
     private Node parent; // The parent of this node
@@ -15,15 +18,17 @@ class Node {
     private int xPos; // The row number of this node in the graph (Matrix)
     private int yPos; // The column number of this node in the graph (Matrix)
 
-    /**
-     * This constructs a node with the actual graph location.
-     *
-     * @param xPos The Row number in the graph (Node's Actual X position in the map)
-     * @param yPos The Column number in the graph (Node's Actual Y position in the map)
-     */
-    public Node(int xPos, int yPos) {
+    private Vector<Node> neighbours; // Neighbours of this node.
+
+    Node(int xPos, int yPos, boolean blocked) {
         this.xPos = xPos;
         this.yPos = yPos;
+        this.blocked = blocked;
+        this.neighbours = new Vector<>();
+    }
+
+    public void addNeighbours(Node neighbour) {
+        neighbours.add(neighbour);
     }
 
     public Node getParent() {
@@ -60,6 +65,18 @@ class Node {
 
     public int getYPos() {
         return yPos;
+    }
+
+    public Vector<Node> getNeighbours() {
+        return neighbours;
+    }
+
+    public void setHCost(double hCost) {
+        this.hCost = hCost;
+    }
+
+    public void setNodeWeight(double nodeWeight) {
+        this.nodeWeight = nodeWeight;
     }
 
     @Override
