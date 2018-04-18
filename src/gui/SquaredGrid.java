@@ -1,5 +1,6 @@
 package gui;
 
+import algo.Node;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
@@ -17,6 +18,7 @@ import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 
 import java.util.Arrays;
+import java.util.List;
 import java.util.Vector;
 import java.util.stream.IntStream;
 
@@ -35,6 +37,7 @@ public class SquaredGrid extends AnchorPane {
         this.controlPanelView = controlPanelView;
         this.gridPane = new GridPane();
         this.graph = new DoublingHypothesis(graph, hypo).getMap();
+        Main.graph = this.graph;
 
         this.gridWidthAndHeight = 800.0; // Setting the width and height
         this.rowMinAndPrefHeight = 30 / hypo; // Adjusting the row height
@@ -207,6 +210,18 @@ public class SquaredGrid extends AnchorPane {
                 getChildren().add(gridPane);
             }
         }
+    }
+
+    public void colorBoxes(List<Node> finalPath) {
+
+        for (Node n : finalPath) {
+            Rectangle p = new Rectangle(recDimensions, recDimensions);
+            p.setStroke(Color.WHITE);
+            p.setFill(Color.GREEN);
+            System.out.println(n.getYPos() + ", " + n.getXPos());
+            this.gridPane.add(p, n.getYPos(), n.getXPos());
+        }
+
     }
 
     // Gets the Monochrome version of colors

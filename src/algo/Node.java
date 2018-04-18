@@ -92,6 +92,10 @@ public class Node {
         this.visited = visited;
     }
 
+    public void setFCost(double fCost) {
+        this.fCost = fCost;
+    }
+
     @Override
     public boolean equals(Object o) {
         if (this == o) return true;

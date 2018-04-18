@@ -6,9 +6,9 @@ import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
-public class Main {
+public class Main extends Application {
 
-//    @Override
+    //    @Override
     public void start(Stage primaryStage) {
         // Creates a new control panel
         ControlPanel controlPanel = new ControlPanel();
@@ -24,18 +24,10 @@ public class Main {
     }
 
     public static void main(String[] args) {
-//        launch(args);
-        AStarAlgorithm as = new AStarAlgorithm(graph, 0, 0, 4, 7,
-                AStarAlgorithm.Heuristic.MANHATTAN);
-        as.findShortestPath();
-
-        for (Node n : as.getFinalPathNodes()) {
-            System.out.println("V     " + n);
-        }
-
+        launch(args);
     }
 
-    public static final int[][] graph = new int[][]{
+    public static int[][] graph = new int[][]{
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 2, 1, 2, 1, 1, 1, 1, 1, 1, 1},
             {4, 4, 1, 4, 1, 1, 1, 2, 2, 2, 2, 2, 2, 1, 1, 1, 1, 1, 1, 1},
             {4, 4, 4, 4, 4, 4, 1, 1, 2, 3, 3, 3, 2, 1, 1, 1, 1, 1, 1, 1},

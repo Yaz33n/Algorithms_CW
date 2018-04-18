@@ -1,5 +1,7 @@
 package gui;
 
+import algo.AStarAlgorithm;
+import algo.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
@@ -250,15 +252,36 @@ public class ControlPanel extends AnchorPane {
         });
 
         btnFSP.setOnAction(e -> {
-//            controller.findPath();
+
+            int sX = Integer.parseInt(txtSourceX.getText());
+            int sY = Integer.parseInt(txtSourceY.getText());
+            int tX = Integer.parseInt(txtTargetX.getText());
+            int tY = Integer.parseInt(txtTargetY.getText());
+
+            AStarAlgorithm.Heuristic type;
+
+            if(rbManhattan.isSelected()) {
+                type = AStarAlgorithm.Heuristic.MANHATTAN;
+            } else if (rbEuclidean.isSelected()) {
+                type = AStarAlgorithm.Heuristic.EUCLIDEAN;
+            } else {
+                type = AStarAlgorithm.Heuristic.CHEBYSHEV;
+            }
+
+            System.out.println(type);
+
+            long startTime_Nano = System.nanoTime();
+            AStarAlgorithm as = new AStarAlgorithm(Main.graph, sX, sY, tX, tY, type);
+            as.findShortestPath();
+            long elapsedTime = (System.nanoTime() - startTime_Nano) / 1000000;
+
+            System.out.println("Elapsed Time: " + elapsedTime);
+            System.out.println("Final G Cost: " + as.getMatrix()[tX][tY].getGCost());
+            grid.colorBoxes(as.getFinalPathNodes());
+
         });
 
     }
-
-//    //        int sX = Integer.parseInt(menuView.getTxtSourceX().getText());
-////        int sY = Integer.parseInt(menuView.getTxtSourceY().getText());
-////        int tX = Integer.parseInt(menuView.getTxtTargetX().getText());
-////        int tY = Integer.parseInt(menuView.getTxtTargetY().getText());
 
     public TextField getTxtSourceX() {
         return txtSourceX;

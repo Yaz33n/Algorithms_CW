@@ -1,7 +1,6 @@
 package algo;
 
 import java.util.*;
-import java.util.logging.Logger;
 
 public class AStarAlgorithm {
 
@@ -79,66 +78,68 @@ public class AStarAlgorithm {
 
     public void findShortestPath() {
 
-        Node startNode = matrix[sourceXPos][sourceYPos];
-        Node endNode = matrix[targetXPos][targetYPos];
+        Node startNode = matrix[sourceXPos][sourceYPos]; // Find and assign the Source Node
+        Node endNode = matrix[targetXPos][targetYPos]; // Find and assign the Target Node
+
         startNode.setGCost(0); // The cost of going from Source to Source is zero.
+        startNode.setParent(null); // Setting the parent as null because this is the sourcePos
 
         openSet.add(startNode); // Adding the current node to the openSet
+        Node currentNode; // Represents the current node that looking at
 
         /*While openSet is not empty we can keep going*/
         while (!openSet.isEmpty()) {
 
-            Node currentNode = openSet.peek();
-
-            System.out.println("Current Node: " + currentNode);
-            if (currentNode.equals(endNode)) {
-                backtrackToOrigin(currentNode);
-                break;
-            }
-
+            currentNode = openSet.poll();
             currentNode.setVisited(true);
-            openSet.remove(currentNode);
             closedSet.add(currentNode);
+
+            /*Checks whether the current looking node is the destination/target node*/
+            if (currentNode.equals(endNode) || currentNode.getHCost() == 0) {
+                System.out.println("Reached To The End"); // Debug Purposes
+                closedSet.add(currentNode); // Add to the closed set
+                backtrackToOrigin(currentNode); // Get the original shortest path
+                break; // Break the entire loop
+            }
 
             // Get the current node neighbours and check all
             for (Node neighbour : currentNode.getNeighbours()) {
-
                 if (!neighbour.isVisited() && !neighbour.isBlocked() && !closedSet.contains(neighbour)) {
+                    /*Get the CurrentNodeGCost and and add the Next Node Weight as the Distance*/
                     final double tentativeGScore = currentNode.getGCost() + neighbour.getNodeWeight();
-                    if (openSet.contains(neighbour)) {
-                        if (tentativeGScore < neighbour.getGCost()) {
-                            neighbour.setGCost(tentativeGScore);
-                        }
-                    } else {
-                        neighbour.setGCost(tentativeGScore);
+                    /*The new F cost will be the past nodes' GScore + the neighbours distance from the target*/
+                    final double newFCost = tentativeGScore + neighbour.getHCost();
+//                    if (!openSet.contains(neighbour)) {
+//                        openSet.add(neighbour);
+//                    } else if (newFCost < neighbour.getGCost()) {
+//                        neighbour.setGCost(tentativeGScore);
+//                        neighbour.setParent(currentNode);
+//
+//                        if (!openSet.contains(neighbour))
+//                            openSet.add(neighbour); // Adding the next neighbour
+//                    }
+                    if (!openSet.contains(neighbour)) {
+                        openSet.add(neighbour);
+                    } else if (newFCost >= neighbour.getGCost()) {
+                        continue;
                     }
 
-                    neighbour.setHCost(tentativeGScore + neighbour.getHCost());
+                    neighbour.setGCost(tentativeGScore);
+                    neighbour.setHCost(newFCost);
                     neighbour.setParent(currentNode);
-                    openSet.add(neighbour);
                 }
             }
         }
-
-        System.out.println("No Path found!");
     }
 
-    private void backtrackToOrigin(Node finalNode) {
+    private void backtrackToOrigin(Node node) {
 
-        Node fNode = finalNode;
-        finalPathNodes.add(fNode); // Adding Target first.
+        Node fNode = node; // Assigns the Node without conflicting with the original.
+        finalPathNodes.add(fNode); // Adding Target Node first.
 
-        while(fNode.getParent() != null) {
-            System.out.println(fNode);
+        while (fNode.getParent() != null) {
             fNode = fNode.getParent();
             finalPathNodes.add(fNode);
-        }
-    }
-
-    public void printMatrix() {
-        System.out.println("length " + matrix[0][0].getNeighbours().size());
-        for (Node nei : matrix[0][0].getNeighbours()) {
-            System.out.println(nei);
         }
     }
 
@@ -186,5 +187,9 @@ public class AStarAlgorithm {
 
     public List<Node> getFinalPathNodes() {
         return finalPathNodes;
+    }
+
+    public Node[][] getMatrix() {
+        return matrix;
     }
 }
