@@ -7,24 +7,27 @@ import java.util.*;
 public class PathFindingAlgorithm {
 
     /*Determining the selected distance based metric for heuristic value*/
-    public enum Heuristic {
-        MANHATTAN, EUCLIDEAN, CHEBYSHEV, NONE
-    }
-
+    public enum Heuristic { MANHATTAN, EUCLIDEAN, CHEBYSHEV, NONE }
     /*Directions for finding the surrounding(neighbouring) nodes*/
-    private enum Direction {
-        NORTH, EAST, SOUTH, WEST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST
-    }
+    private enum Direction { NORTH, EAST, SOUTH, WEST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST }
 
-    private int sourceYRowPos, sourceXColPos, targetYRowPos, targetXColPos; // Row|Col Row|Col
+    private int sourceYRowPos, sourceXColPos, targetYRowPos, targetXColPos; // [Row|Col] [Row|Col]
     private Heuristic selectedMetric; // User selected :: distance based metric calculation method
     private int[][] graph; // Skeleton graph with weights
-    private Node[][] matrix; // Node Matrix to holdall the node objects.
+    private Node[][] matrix; // Node Matrix to hold all the node objects.
 
     private PriorityQueue<Node> openSet; // OpenSet contains all the node that need to be evaluated.
-    private Set<Node> closedSet; // Closed Set stores all the evaluated nodes.
+    private Set<Node> closedSet; // Closed Set stores all the evaluated nodes. // TODO REMOVE
     private List<Node> finalPathNodes; // Stores the final backtracked path.
 
+    /**
+     * @param graph   weighted graph to create the node matrix. (Including Obstacles)
+     * @param sYPos   Source Destination Row(Y) Position (in the graph[][])
+     * @param sXPos   Source Destination Column(X) Position (in the graph[][])
+     * @param tYPos   Target Destination Row(Y) Position (in the graph[][])
+     * @param tXPos   Target Destination Column(X) Position (in the graph[][])
+     * @param sMetric User Selected distance based metric heuristic calculation method
+     */
     public PathFindingAlgorithm(int[][] graph, int sYPos, int sXPos, int tYPos, int tXPos, Heuristic sMetric) {
         this.graph = graph;
         this.sourceYRowPos = sYPos;
@@ -34,13 +37,12 @@ public class PathFindingAlgorithm {
         this.selectedMetric = sMetric;
 
         // Sorted by Ascending order of fCost
-        //overriding the compare method to compare two nodes from the fCost
         openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
         closedSet = new HashSet<>();
         finalPathNodes = new ArrayList<>();
 
-        initNodeMatrix();
-        addNeighbours();
+        initNodeMatrix(); // First init the node[][] matrix with heuristics.
+        addNeighbours(); // Second add all the neighbouring nodes in each node in matrix[][].
     }
 
     private void initNodeMatrix() {
@@ -48,8 +50,8 @@ public class PathFindingAlgorithm {
         // Create the matrix array with the same size of graph (y,x)
         matrix = new Node[graph.length][graph.length];
 
-        for (int y = 0; y < graph.length; y++) {
-            for (int x = 0; x < graph[y].length; x++) {
+        for (int y = 0; y < graph.length; y++) { /*Traverse Rows*/
+            for (int x = 0; x < graph[y].length; x++) { /*Traverse Each column in Row*/
                 // Creates a new node with x, y coordinates and the blocked status.
                 Node node = new Node(y, x, graph[y][x] == 0);
                 // Set the heuristic value from this node to the end node.
@@ -109,11 +111,11 @@ public class PathFindingAlgorithm {
                     /*The new F cost will be the past nodes' GScore + the neighbours distance from the target*/
                     final double newFCost = tentativeGScore + neighbour.getHCost();
 
-                    if (newFCost < neighbour.getFCost()) {
-                        neighbour.setParent(currentNode);
-                        neighbour.setGCost(tentativeGScore);
-                        neighbour.setFCost(newFCost);
-                        openSet.add(neighbour);
+                    if (newFCost < neighbour.getFCost()) { // Greedy check
+                        neighbour.setParent(currentNode); // Sets came from as the currentNode
+                        neighbour.setGCost(tentativeGScore); // Set the temp G value to the new neighbour.
+                        neighbour.setFCost(newFCost); // Set the new F Cost to the new neighbour.
+                        openSet.add(neighbour); // Now if this is the best we need to check this next
                     }
                 }
             }
@@ -128,15 +130,15 @@ public class PathFindingAlgorithm {
         Node fNode = node; // Assigns the Node without conflicting with the original.
         finalPathNodes.add(fNode); // Adding Target Node first.
 
+        /*Initially we set the starting node parent as null. We need to travers until that*/
         while (fNode.getParent() != null) {
-            finalPathNodes.add(fNode);
-            fNode = fNode.getParent();
+            finalPathNodes.add(fNode); // Push the node to the finalPath
+            fNode = fNode.getParent(); // RE-InIt with its parent
         }
     }
 
     /*Y is the ROW X is the column*/
     private int[] getDirectionYX(Node node, Direction direction) {
-
 
         int rowYPos = node.getYRowNo(), colXPos = node.getXColNo();
 
@@ -157,22 +159,27 @@ public class PathFindingAlgorithm {
     private double getHeuristicVal(Node cNode, Heuristic type) {
 
         if (type == Heuristic.MANHATTAN) {
+            /*|x1 - x2| + |y1 - y2|*/
             return Math.abs(cNode.getXColNo() - targetXColPos) + Math.abs(cNode.getYRowNo() - targetYRowPos);
         } else if (type == Heuristic.EUCLIDEAN) {
+            /*Two dimensional Euclidean*/
             return Math.sqrt(Math.pow(cNode.getXColNo() - targetXColPos, 2) + Math.pow(cNode.getYRowNo() - targetYRowPos, 2));
         } else if (type == Heuristic.CHEBYSHEV) {
+            /*Injective metric space. m(|x1 - x2|,|y1 - y2|)*/
             return Math.max(Math.abs(cNode.getXColNo() - targetXColPos), Math.abs(cNode.getYRowNo() - targetYRowPos));
-        } else if (type == Heuristic.NONE){
+        } else if (type == Heuristic.NONE) {
             return 0.0;
         }
 
-        return 0.0; // Zero H
+        return 0.0; // Zero H TODO RESOLVE
     }
 
+    /*Return the final constructed path (from Backward) if no path size() == 0*/
     public List<Node> getFinalPathNodes() {
         return finalPathNodes;
     }
 
+    /*Return the generated node matrix[][] array from the weighted graph that given to this class*/
     public Node[][] getMatrix() {
         return matrix;
     }

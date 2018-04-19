@@ -14,7 +14,7 @@ public class Node {
     private double gCost; // Distance from the starting node to this node
     private double hCost; // heuristic: Distance from the end node to this node
     private double fCost; // The total cost (g + h)
-    private double nodeWeight; // Weight of this node
+    private double nodeWeight; // Weight of this node (used when calculating the G Cost)
 
     private int yRowNo; // The row number of this node in the graph (Matrix)
     private int xColNo; // The column number of this node in the graph (Matrix)

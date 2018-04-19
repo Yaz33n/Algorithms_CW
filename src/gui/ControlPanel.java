@@ -13,7 +13,6 @@ import javafx.stage.StageStyle;
 
 public class ControlPanel extends AnchorPane {
 
-    private static final int MILLISECONDS = 1000000;
     /*GUI COMPONENTS*/
     private static Stage stageForGraph;
     private static Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
@@ -134,77 +133,77 @@ public class ControlPanel extends AnchorPane {
 
     private void initTextBoxes() {
 
-        this.txtSourceRow = new TextField();
-        this.txtSourceRow.setPromptText("srY");
-        this.txtSourceRow.setLayoutX(178.0);
-        this.txtSourceRow.setLayoutY(100.0);
-        this.txtSourceRow.setPrefSize(47.0, 28.0);
+        txtSourceRow = new TextField();
+        txtSourceRow.setPromptText("srY");
+        txtSourceRow.setLayoutX(178.0);
+        txtSourceRow.setLayoutY(100.0);
+        txtSourceRow.setPrefSize(47.0, 28.0);
 
-        this.txtSourceCol = new TextField();
-        this.txtSourceCol.setPromptText("scX");
-        this.txtSourceCol.setLayoutX(231.0);
-        this.txtSourceCol.setLayoutY(100.0);
-        this.txtSourceCol.setPrefSize(47.0, 28.0);
+        txtSourceCol = new TextField();
+        txtSourceCol.setPromptText("scX");
+        txtSourceCol.setLayoutX(231.0);
+        txtSourceCol.setLayoutY(100.0);
+        txtSourceCol.setPrefSize(47.0, 28.0);
 
-        this.txtTargetRow = new TextField();
-        this.txtTargetRow.setPromptText("trY");
-        this.txtTargetRow.setLayoutX(463.0);
-        this.txtTargetRow.setLayoutY(100.0);
-        this.txtTargetRow.setPrefSize(47.0, 28.0);
+        txtTargetRow = new TextField();
+        txtTargetRow.setPromptText("trY");
+        txtTargetRow.setLayoutX(463.0);
+        txtTargetRow.setLayoutY(100.0);
+        txtTargetRow.setPrefSize(47.0, 28.0);
 
-        this.txtTargetCol = new TextField();
-        this.txtTargetCol.setPromptText("tcX");
-        this.txtTargetCol.setLayoutX(516.0);
-        this.txtTargetCol.setLayoutY(100.0);
-        this.txtTargetCol.setPrefSize(47.0, 28.0);
+        txtTargetCol = new TextField();
+        txtTargetCol.setPromptText("tcX");
+        txtTargetCol.setLayoutX(516.0);
+        txtTargetCol.setLayoutY(100.0);
+        txtTargetCol.setPrefSize(47.0, 28.0);
 
-        this.resultText = new TextArea("No Results Yet!");
-        this.resultText.setPrefSize(538.0, 74.0);
-        this.resultText.setEditable(false);
-        this.resultText.setLayoutX(30.0);
-        this.resultText.setLayoutY(363.0);
+        resultText = new TextArea("No Results Yet!");
+        resultText.setPrefSize(538.0, 74.0);
+        resultText.setEditable(false);
+        resultText.setLayoutX(30.0);
+        resultText.setLayoutY(363.0);
 
     }
 
     private void initCheckBoxes() {
 
-        this.cbShowGridNumbers = new CheckBox("Show Grid Numbers");
-        this.cbShowGridNumbers.setFont(new Font(12));
-        this.cbShowGridNumbers.setTextFill(Color.WHITE);
-        this.cbShowGridNumbers.setLayoutX(33.0);
-        this.cbShowGridNumbers.setLayoutY(213.0);
+        cbShowGridNumbers = new CheckBox("Show Grid Numbers");
+        cbShowGridNumbers.setFont(new Font(12));
+        cbShowGridNumbers.setTextFill(Color.WHITE);
+        cbShowGridNumbers.setLayoutX(33.0);
+        cbShowGridNumbers.setLayoutY(213.0);
 
-        this.cbShowGridWeight = new CheckBox("Show Graph Weights");
-        this.cbShowGridWeight.setFont(new Font(12));
-        this.cbShowGridWeight.setTextFill(Color.WHITE);
-        this.cbShowGridWeight.setLayoutX(171.0);
-        this.cbShowGridWeight.setLayoutY(213.0);
+        cbShowGridWeight = new CheckBox("Show Graph Weights");
+        cbShowGridWeight.setFont(new Font(12));
+        cbShowGridWeight.setTextFill(Color.WHITE);
+        cbShowGridWeight.setLayoutX(171.0);
+        cbShowGridWeight.setLayoutY(213.0);
 
-        this.cbShowActualMap = new CheckBox("Show Actual Map");
-        this.cbShowActualMap.setFont(new Font(12));
-        this.cbShowActualMap.setTextFill(Color.WHITE);
-        this.cbShowActualMap.setLayoutX(318.0);
-        this.cbShowActualMap.setLayoutY(213.0);
+        cbShowActualMap = new CheckBox("Show Actual Map");
+        cbShowActualMap.setFont(new Font(12));
+        cbShowActualMap.setTextFill(Color.WHITE);
+        cbShowActualMap.setLayoutX(318.0);
+        cbShowActualMap.setLayoutY(213.0);
 
-        this.cbShowGridColored = new CheckBox("Show Colored Grid");
-        this.cbShowGridColored.setFont(new Font(12));
-        this.cbShowGridColored.setTextFill(Color.WHITE);
-        this.cbShowGridColored.setLayoutX(443.0);
-        this.cbShowGridColored.setLayoutY(213.0);
+        cbShowGridColored = new CheckBox("Show Colored Grid");
+        cbShowGridColored.setFont(new Font(12));
+        cbShowGridColored.setTextFill(Color.WHITE);
+        cbShowGridColored.setLayoutX(443.0);
+        cbShowGridColored.setLayoutY(213.0);
 
     }
 
     private void initSeparators() {
 
-        this.spInputs = new Separator();
-        this.spInputs.setLayoutX(30.0);
-        this.spInputs.setLayoutY(192.0);
-        this.spInputs.setPrefSize(538.0, 2.0);
+        spInputs = new Separator();
+        spInputs.setLayoutX(30.0);
+        spInputs.setLayoutY(192.0);
+        spInputs.setPrefSize(538.0, 2.0);
 
-        this.spOperations = new Separator();
-        this.spOperations.setLayoutX(30.0);
-        this.spOperations.setLayoutY(322.0);
-        this.spOperations.setPrefSize(538.0, 2.0);
+        spOperations = new Separator();
+        spOperations.setLayoutX(30.0);
+        spOperations.setLayoutY(322.0);
+        spOperations.setPrefSize(538.0, 2.0);
 
     }
 
@@ -287,13 +286,13 @@ public class ControlPanel extends AnchorPane {
             /* SENSITIVE PART - After this, the code will never checks for input exceptions. */
             // -------------------------------------------------------------------------------
             // Record the start time in ms.
-            long startTime_Nano = System.nanoTime();
+            long startTime_Nano = Utils.nanoTimeStamp();
             /*Instantiate the PathFinding class. with the static graph & source,target & selected distance metric type*/
             PathFindingAlgorithm as = new PathFindingAlgorithm(Main.graph, sY, sX, tY, tX, getHeuType());
             /*Find the shortest path.*/
             as.findShortestPath();
             /* Record the elapsed time in milliseconds. */
-            long elapsedTime = elapsedTimeMS(startTime_Nano);
+            long elapsedTime = Utils.elapsedTimeMS(startTime_Nano);
 
             resultText.setText(""); // Clear the existing text.
 
@@ -306,20 +305,14 @@ public class ControlPanel extends AnchorPane {
 
             for (Node n : as.getFinalPathNodes())
                 sb.append(n.getYRowNo()).append(",").append(n.getXColNo()).append("-> ");
-
+            
             resultText.setText(sb.toString());
             grid.drawPath(as.getFinalPathNodes());
 
         });
     }
 
-    private static long nanoTimeStamp() {
-        return System.nanoTime();
-    }
 
-    private static int elapsedTimeMS(final long start) {
-        return (int) (System.nanoTime() - start) / MILLISECONDS;
-    }
 
     private PathFindingAlgorithm.Heuristic getHeuType() {
 
