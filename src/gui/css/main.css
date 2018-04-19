@@ -1,3 +1,41 @@
+#startup_optionsGridPane { /* Setting the width and height of the grid*/
+    -fx-pref-height: 180;
+    -fx-pref-width: 320;
+    -fx-background-color: #232323;
+}
+
+#startup_btnShowGrid {
+    -fx-pref-height: 30px;
+    -fx-pref-width: 395px;
+    -fx-background-color: #009800;
+    -fx-text-fill: black;
+}
+
+#startup_HelperText {
+    -fx-alignment: center;
+    -fx-content-display: center;
+    -fx-pref-height: 18.0;
+    -fx-pref-width: 345.0;
+    -fx-font-size: 14.0;
+    -fx-font-family: System Bold;
+    -fx-text-fill: white;
+}
+
+#startup_cbToggleHeuristics {
+    -fx-alignment: center;
+    -fx-pref-height: 40.0;
+    -fx-pref-width: 210.0;
+    -fx-text-fill: white;
+}
+
+#startup_rbs {
+    -fx-alignment: top_center;
+    -fx-content-display: center;
+    -fx-pref-height: 18.0;
+    -fx-pref-width: 135.0;
+    -fx-text-fill: white;
+}
+
 #btnReset {
     -fx-font-family: "System";
     -fx-font-size: 11.0;

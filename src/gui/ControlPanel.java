@@ -1,6 +1,6 @@
 package gui;
 
-import algo.AStarAlgorithm;
+import algo.PathFindingAlgorithm;
 import algo.Node;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
@@ -13,17 +13,22 @@ import javafx.stage.StageStyle;
 
 public class ControlPanel extends AnchorPane {
 
-    private Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
-    private TextField txtSourceRow, txtSourceCol, txtTargetRow, txtTargetCol;
-    private TextArea resultText;
-    private RadioButton rbManhattan, rbChebyshev, rbEuclidean;
-    private CheckBox cbShowGridNumbers, cbShowGridWeight, cbShowActualMap, cbShowGridColored;
-    private Separator spInputs, spOperations;
-    private Button btnReset, btnFSP;
-    private SquaredGrid grid;
-    private Stage stageForGraph;
+    /*GUI COMPONENTS*/
+    private static Stage stageForGraph;
+    private static Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
+    private static TextField txtSourceRow, txtSourceCol, txtTargetRow, txtTargetCol;
+    private static TextArea resultText;
+    private static RadioButton rbManhattan, rbChebyshev, rbEuclidean;
+    private static CheckBox cbShowGridNumbers, cbShowGridWeight, cbShowActualMap, cbShowGridColored;
+    private static Separator spInputs, spOperations;
+    private static Button btnReset, btnFSP;
 
-    ControlPanel() {
+
+    private static SquaredGrid grid;
+    private static boolean useHeuristics;
+
+    ControlPanel(boolean useHeuristics) {
+        ControlPanel.useHeuristics = useHeuristics;
         initComponents();
     }
 
@@ -45,51 +50,50 @@ public class ControlPanel extends AnchorPane {
                 lblResult, resultText);
 
         /* Doubling Hypothesis :: 1 is default */
-        this.grid = new SquaredGrid(this, Main.graph, 1); // Creating the grid
+        grid = new SquaredGrid(this); // Creating the grid
 
         stageForGraph = new Stage(StageStyle.DECORATED);
         stageForGraph.setTitle("PATH FINDING ON SQUARED GRID");
-        stageForGraph.setScene(new Scene(this.grid, 850, 850));
+        stageForGraph.setScene(new Scene(grid, 850, 850));
         stageForGraph.setResizable(false);
         stageForGraph.show();
-
     }
 
     private void initLabels() {
 
-        this.lblTitle = new Label("PATH FINDING ON SQUARED GRID"); // Creates a new label with text
-        this.lblTitle.setFont(new Font("Consolas Bold", 25.0)); // Setting font & size
-        this.lblTitle.setTextFill(Color.WHITE); // Setting label font color
-        this.lblTitle.setLayoutX(114.0); // Sets the element in X axis
-        this.lblTitle.setLayoutY(22.0); // Sets the element in Y axis
+        lblTitle = new Label("PATH FINDING ON SQUARED GRID"); // Creates a new label with text
+        lblTitle.setFont(new Font("Consolas Bold", 25.0)); // Setting font & size
+        lblTitle.setTextFill(Color.WHITE); // Setting label font color
+        lblTitle.setLayoutX(114.0); // Sets the element in X axis
+        lblTitle.setLayoutY(22.0); // Sets the element in Y axis
 
-        this.lblSource = new Label("SOURCE DESTINATION");
-        this.lblSource.setPrefSize(134.0, 26.0);
-        this.lblSource.setFont(new Font(/*"Consolas Bold",*/ 13.0)); // Setting font size
-        this.lblSource.setTextFill(Color.WHITE); // Setting label font color
-        this.lblSource.setLayoutX(31.0); // Sets the element in X axis
-        this.lblSource.setLayoutY(101.0); // Sets the element in Y axis
+        lblSource = new Label("SOURCE DESTINATION");
+        lblSource.setPrefSize(134.0, 26.0);
+        lblSource.setFont(new Font(/*"Consolas Bold",*/ 13.0)); // Setting font size
+        lblSource.setTextFill(Color.WHITE); // Setting label font color
+        lblSource.setLayoutX(31.0); // Sets the element in X axis
+        lblSource.setLayoutY(101.0); // Sets the element in Y axis
 
-        this.lblTarget = new Label("TARGET DESTINATION");
-        this.lblTarget.setPrefSize(134.0, 26.0);
-        this.lblTarget.setFont(new Font(/*"Consolas Bold",*/ 13.0)); // Setting font size
-        this.lblTarget.setTextFill(Color.WHITE); // Setting label font color
-        this.lblTarget.setLayoutX(315.0); // Sets the element in X axis
-        this.lblTarget.setLayoutY(101.0); // Sets the element in Y axis
+        lblTarget = new Label("TARGET DESTINATION");
+        lblTarget.setPrefSize(134.0, 26.0);
+        lblTarget.setFont(new Font(/*"Consolas Bold",*/ 13.0)); // Setting font size
+        lblTarget.setTextFill(Color.WHITE); // Setting label font color
+        lblTarget.setLayoutX(315.0); // Sets the element in X axis
+        lblTarget.setLayoutY(101.0); // Sets the element in Y axis
 
-        this.lblMetrics = new Label("Select a distance based metric: "); // Creates a new label with text
-        this.lblMetrics.setPrefSize(258.0, 20.0);
-        this.lblMetrics.setFont(new Font("System", 15.0)); // Setting font & size
-        this.lblMetrics.setTextFill(Color.WHITE); // Setting label font color
-        this.lblMetrics.setLayoutX(29.0); // Sets the element in X axis
-        this.lblMetrics.setLayoutY(156.0); // Sets the element in Y axis
+        lblMetrics = new Label("Select a distance based metric: "); // Creates a new label with text
+        lblMetrics.setPrefSize(258.0, 20.0);
+        lblMetrics.setFont(new Font("System", 15.0)); // Setting font & size
+        lblMetrics.setTextFill(Color.WHITE); // Setting label font color
+        lblMetrics.setLayoutX(29.0); // Sets the element in X axis
+        lblMetrics.setLayoutY(156.0); // Sets the element in Y axis
 
-        this.lblResult = new Label("RESULT");
-        this.lblResult.setPrefSize(66.0, 26.0);
-        this.lblResult.setFont(new Font("Consolas Bold", 16.0)); // Setting font & size
-        this.lblResult.setTextFill(Color.WHITE); // Setting label font color
-        this.lblResult.setLayoutX(30.0); // Sets the element in X axis
-        this.lblResult.setLayoutY(331.0); // Sets the element in Y axis
+        lblResult = new Label("RESULT");
+        lblResult.setPrefSize(66.0, 26.0);
+        lblResult.setFont(new Font("Consolas Bold", 16.0)); // Setting font & size
+        lblResult.setTextFill(Color.WHITE); // Setting label font color
+        lblResult.setLayoutX(30.0); // Sets the element in X axis
+        lblResult.setLayoutY(331.0); // Sets the element in Y axis
 
     }
 
@@ -216,13 +220,9 @@ public class ControlPanel extends AnchorPane {
     private void addEventHandlers() {
 
         cbShowGridNumbers.setOnAction(e -> grid.viewGridNumbers(cbShowGridNumbers.isSelected()));
-
         cbShowGridWeight.setOnAction(e -> grid.viewNodeWeights(cbShowGridWeight.isSelected()));
-
         cbShowGridColored.setOnAction(e -> grid.viewColoredGrid(cbShowGridColored.isSelected()));
-
         cbShowActualMap.setOnAction(e -> grid.viewActualMap(cbShowActualMap.isSelected()));
-
         btnReset.setOnAction(e -> {
 
             cbShowGridWeight.setSelected(false);
@@ -240,46 +240,65 @@ public class ControlPanel extends AnchorPane {
             txtTargetCol.setText("");
             txtTargetRow.setText("");
         });
-
         btnFSP.setOnAction(e -> {
 
-            int sY = Integer.parseInt(txtSourceRow.getText());
-            int sX = Integer.parseInt(txtSourceCol.getText());
-            int tY = Integer.parseInt(txtTargetRow.getText());
-            int tX = Integer.parseInt(txtTargetCol.getText());
+            // Clear the existing path or use different colors to each path TODO
+            int sY = -1, sX = -1, tY = -1, tX = -1;
 
-            System.out.println(sY + " " + sX + " | " + tY + " " + tX);
-            AStarAlgorithm.Heuristic type;
-
-            if (rbManhattan.isSelected()) {
-                type = AStarAlgorithm.Heuristic.MANHATTAN;
-            } else if (rbEuclidean.isSelected()) {
-                type = AStarAlgorithm.Heuristic.EUCLIDEAN;
-            } else {
-                type = AStarAlgorithm.Heuristic.CHEBYSHEV;
+            try {
+                sY = Integer.parseInt(txtSourceRow.getText());
+                sX = Integer.parseInt(txtSourceCol.getText());
+                tY = Integer.parseInt(txtTargetRow.getText());
+                tX = Integer.parseInt(txtTargetCol.getText());
+            } catch (NumberFormatException exception) {
+                System.out.println(exception.getMessage());
             }
 
-            System.out.println(type);
+            if(sY + sX + tY + tX == -4) {
+                // show alert
+                return;
+            }
 
             long startTime_Nano = System.nanoTime();
-            AStarAlgorithm as = new AStarAlgorithm(Main.graph, sY, sX, tY, tX, type, grid);
-
-            for(Node nei: as.getMatrix()[0][6].getNeighbours()) {
-                System.out.println(nei);
-            }
-
+            PathFindingAlgorithm as = new PathFindingAlgorithm(Main.graph, sY, sX, tY, tX, getHeuType());
             as.findShortestPath();
             long elapsedTime = (System.nanoTime() - startTime_Nano) / 1000000;
 
-            resultText.setText("Elapsed Time: " + elapsedTime + "ms" + "\n"
-                    + "Final G Cost: " + as.getMatrix()[tY][tX].getGCost());
+            resultText.setText(""); // Clear the existing text.
+            StringBuilder sb = new StringBuilder();
 
-            for(Node nei: as.getFinalPathNodes()) {
-                System.out.println("F NODE" + nei.getYRowNo() + ", " + nei.getXColNo());
-            }
+            // Sets the final G cost and the elapsed time to solve the problem
+            sb.append("Elapsed Time: ").append(elapsedTime).append("ms").append("\n")
+                    .append("Final G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
+                    .append("\n Path Through: ");
+
+            for (Node n : as.getFinalPathNodes())
+                sb.append(n.getYRowNo()).append(",").append(n.getXColNo())
+                        .append("-> ");
+
+
+            resultText.setText(sb.toString());
             grid.drawPath(as.getFinalPathNodes());
 
         });
+    }
+
+    private void validate() {
+
+
+    }
+
+    private PathFindingAlgorithm.Heuristic getHeuType() {
+
+        if (!useHeuristics) return PathFindingAlgorithm.Heuristic.NONE;
+
+        if (rbManhattan.isSelected()) {
+            return PathFindingAlgorithm.Heuristic.MANHATTAN;
+        } else if (rbEuclidean.isSelected()) {
+            return PathFindingAlgorithm.Heuristic.EUCLIDEAN;
+        } else {
+            return PathFindingAlgorithm.Heuristic.CHEBYSHEV;
+        }
 
     }
 

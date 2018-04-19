@@ -3,6 +3,7 @@ package gui;
 import algo.Node;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
+import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Alert;
@@ -24,45 +25,42 @@ import java.util.stream.IntStream;
 
 public class SquaredGrid extends AnchorPane {
 
-    private ControlPanel controlPanelView;
+    private ControlPanel controlPanelView; // control panel
     private GridPane gridPane;
-    private int[][] graph;
     private ImageView actualMap;
+
     private Vector<Rectangle> gridBoxes;
     private Vector<Text> gridNumbers, graphWeight;
     private double gridWidthAndHeight, rowMinAndPrefHeight, colMinAndPrefWidth, recDimensions;
 
-    SquaredGrid(ControlPanel controlPanelView, int[][] graph, int hypo) {
+    SquaredGrid(ControlPanel controlPanelView) {
 
         this.controlPanelView = controlPanelView;
         this.gridPane = new GridPane();
-        this.graph = new DoublingHypothesis(graph, hypo).getMap();
-        Main.graph = this.graph;
-
-        this.gridWidthAndHeight = 850; // Setting the width and height
-        this.rowMinAndPrefHeight = 30 / hypo; // Adjusting the row height
-        this.colMinAndPrefWidth = 30 / hypo; // Adjusting the col width
-        this.recDimensions = 50 / hypo; // Adjusting the rectangle dimensions
+        this.gridWidthAndHeight = 840; // Setting the width and height
+        this.rowMinAndPrefHeight = 20 / 2; // Adjusting the row height
+        this.colMinAndPrefWidth = 20 / 2; // Adjusting the col width
+        this.recDimensions = 45; // Adjusting the rectangle dimensions
 
         initLayoutComponents();
     }
 
     private void initLayoutComponents() {
 
-        // Setting up the main anchor pane
-//        setPrefSize(gridWidthAndHeight, gridWidthAndHeight);
-//        setStyle("-fx-background-color: #232323");
+//         Setting up the main anchor pane
+        setPrefSize(gridWidthAndHeight, gridWidthAndHeight);
+        setStyle("-fx-background-color: #232323");
 
 //        this.setId("sGAnchorPane");
 
-        // Initializing the inner gridPane
-        gridPane.setLayoutX(5);
-        gridPane.setLayoutY(5);
+//         Initializing the inner gridPane
+        gridPane.setLayoutX(10);
+        gridPane.setLayoutY(10);
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.setGridLinesVisible(true);
+//        gridPane.setGridLinesVisible(true);
         gridPane.setPrefSize(gridWidthAndHeight, gridWidthAndHeight);
 
-        for (int[] ignored /* Element Ignored */ : graph) {
+        for (int[] ignored /* Element Ignored */ : Main.graph) {
             // Adding the rows to the GridPane
             RowConstraints row = new RowConstraints();
             row.setVgrow(Priority.SOMETIMES);
@@ -92,8 +90,8 @@ public class SquaredGrid extends AnchorPane {
     private void addGridBoxes() {
 
         Platform.runLater(() -> {
-            for (int r = 0; r < graph.length; r++) {
-                for (int c = 0; c < graph[r].length; c++) {
+            for (int r = 0; r < Main.graph.length; r++) {
+                for (int c = 0; c < Main.graph[r].length; c++) {
 
                     final Rectangle rec = new Rectangle(recDimensions, recDimensions);
                     final int row = r, col = c;
@@ -101,7 +99,7 @@ public class SquaredGrid extends AnchorPane {
                     rec.setArcWidth(5);
                     rec.setStrokeType(StrokeType.OUTSIDE);
                     rec.setStroke(GridColors.NON_COLORED_GRID_BORDER.getPaint());
-                    rec.setFill(getGreyScaleColor(graph[row][col]));
+                    rec.setFill(getGreyScaleColor(Main.graph[row][col]));
 
                     // adding the event listener for the mouse.
                     rec.setOnMouseClicked(e -> {
@@ -112,7 +110,7 @@ public class SquaredGrid extends AnchorPane {
                         viewNodeWeights(false);
 
                         if (e.getButton() == MouseButton.PRIMARY) {
-                            if (graph[row][col] != 0) { // Checking if the node is blocked
+                            if (Main.graph[row][col] != 0) { // Checking if the node is blocked
                                 controlPanelView.getTxtSourceRow().setText(String.valueOf(row));
                                 controlPanelView.getTxtSourceCol().setText(String.valueOf(col));
                             } else {
@@ -120,7 +118,7 @@ public class SquaredGrid extends AnchorPane {
                                         + " is blocked. You cannot set this as your Source destination");
                             }
                         } else if (e.getButton() == MouseButton.SECONDARY) {
-                            if (graph[row][col] != 0) { // Checking if the node is blocked
+                            if (Main.graph[row][col] != 0) { // Checking if the node is blocked
                                 controlPanelView.getTxtTargetRow().setText(String.valueOf(row));
                                 controlPanelView.getTxtTargetCol().setText(String.valueOf(col));
                             } else {
@@ -137,22 +135,24 @@ public class SquaredGrid extends AnchorPane {
         });
     }
 
-    public void viewColoredGrid(boolean show) {
+    public void viewColoredGrid(final boolean show) {
         Platform.runLater(() -> {
             for (Rectangle r : gridBoxes) {
                 final int row = GridPane.getRowIndex(r), col = GridPane.getColumnIndex(r);
                 r.setStroke(show ? GridColors.COLORED_GRID_BORDER.getPaint() :
                         GridColors.NON_COLORED_GRID_BORDER.getPaint());
-                r.setFill(show ? getRGBColor(graph[row][col]) : getGreyScaleColor(graph[row][col]));
+                r.setFill(show ? getRGBColor(Main.graph[row][col]) :
+                        getGreyScaleColor(Main.graph[row][col]));
             }
         });
     }
 
-    public void viewGridNumbers(boolean show) {
-        if (show) {
-            Platform.runLater(() -> {
-                for (int r = 0; r < graph.length; r++) {
-                    for (int c = 0; c < graph[r].length; c++) {
+    public void viewGridNumbers(final boolean show) {
+
+        Platform.runLater(() -> {
+            if (show) {
+                for (int r = 0; r < Main.graph.length; r++) {
+                    for (int c = 0; c < Main.graph[r].length; c++) {
                         Text helper = new Text(r + "," + c);
                         helper.setFontSmoothingType(FontSmoothingType.LCD);
                         helper.setFont(new Font(12));
@@ -161,21 +161,21 @@ public class SquaredGrid extends AnchorPane {
                         gridPane.add(helper, c, r);
                     }
                 }
-            });
-        } else {
-            Platform.runLater(() -> {
+            } else {
                 if (gridNumbers != null && gridNumbers.size() > 0)
                     gridPane.getChildren().removeAll(gridNumbers);
-            });
-        }
+
+            }
+        });
+
     }
 
-    public void viewNodeWeights(boolean show) {
-        if (show)
-            Platform.runLater(() -> {
-                for (int r = 0; r < graph.length; r++) {
-                    for (int c = 0; c < graph[r].length; c++) {
-                        Text weight = new Text(Integer.toString(graph[r][c]));
+    public void viewNodeWeights(final boolean show) {
+        Platform.runLater(() -> {
+            if (show)
+                for (int r = 0; r < Main.graph.length; r++) {
+                    for (int c = 0; c < Main.graph[r].length; c++) {
+                        Text weight = new Text(Integer.toString(Main.graph[r][c]));
                         weight.setFontSmoothingType(FontSmoothingType.LCD);
                         weight.setFont(new Font(12));
                         weight.setFill(GridColors.GRID_BOX_TEXT_COLOR.getPaint());
@@ -184,26 +184,26 @@ public class SquaredGrid extends AnchorPane {
                         gridPane.add(weight, c, r);
                     }
                 }
-            });
-        else
-            Platform.runLater(() -> {
-                if (graphWeight != null && graphWeight.size() > 0)
-                    gridPane.getChildren().removeAll(graphWeight);
-            });
+            else if (graphWeight != null && graphWeight.size() > 0)
+                gridPane.getChildren().removeAll(graphWeight);
+        });
+
     }
 
     public void viewActualMap(boolean show) {
 
+//        Platform.runLater(());
         if (show) {
             actualMap = new ImageView(new Image("gui/images/map.jpg"));
-            actualMap.setFitWidth(800);
-            actualMap.setFitHeight(800);
+            actualMap.setFitWidth(850);
+            actualMap.setFitHeight(850);
             actualMap.setLayoutX(5);
             actualMap.setLayoutY(5);
             actualMap.setPickOnBounds(true);
             actualMap.setPreserveRatio(true);
             actualMap.setSmooth(true);
             actualMap.setCache(true);
+            actualMap.setOpacity(0.1);
             getChildren().remove(gridPane);
             getChildren().add(actualMap);
         } else {
@@ -225,7 +225,7 @@ public class SquaredGrid extends AnchorPane {
     }
 
     public void colorNeighbours(int row, int col) {
-        Rectangle p = new Rectangle(recDimensions / 1.1, recDimensions / 1.1);
+        Rectangle p = new Rectangle(20, 20);
         p.setStroke(Color.TRANSPARENT);
         p.setFill(Color.RED);
         this.gridPane.add(p, col, row);
@@ -302,57 +302,5 @@ public class SquaredGrid extends AnchorPane {
     }
 
     // Zoom IN/OUT the map
-    private class DoublingHypothesis {
 
-        private int[][] arrayToZoom;
-        private int[][] zoomedArray;
-        private int hypo;
-
-        private DoublingHypothesis(int[][] arrayToZoom, /* Standard size 1 */ int hypo) {
-            if (hypo > 5) throw new UnsupportedOperationException("Maximum is 5");
-            this.arrayToZoom = arrayToZoom;
-            this.hypo = hypo <= 0 ? 1 : hypo;
-            int len = arrayToZoom.length << --this.hypo;
-            this.zoomedArray = new int[len][len];
-        }
-
-        // Not Stable but still works.
-        // Max Hypothesis value is 5. Where Over 5 will take forever lol.
-        private int[][] getMap() {
-            if (++hypo == 1) return arrayToZoom;
-            int x = 0, z = 0, c = (int) Math.pow(2, hypo) / 2;
-            for (int[] a : arrayToZoom) {
-                while (z < c) zoomedArray[x + z++] = repElem(a, c /*Re-Check*/);
-                x += z; /*Sync*/
-                z = 0; /*Reset*/
-            }
-
-            return zoomedArray;
-        }
-
-        private int[] repElem(int[] arr, int times) {
-            if (times == 1) return arr;
-            int[] rep = new int[]{};
-            for (int i : arr) {
-                // !boxed()-- Insanely Slower than arrayCopy but gets the job done.
-                rep = IntStream.concat(Arrays.stream(rep), Arrays.stream(fill(i, times))).toArray();
-            }
-            return rep;
-        }
-
-        private int[] fill(int elem, int times) {
-            int[] arr = new int[ /* times == 1 ? ++times : */ times];
-            Arrays.fill(arr, elem);
-            return arr;
-        }
-
-        /* Utils */
-        private void print() {
-            zoomedArray = getMap();
-            for (int[] a : zoomedArray) {
-                for (int i : a) System.out.print(i);
-                System.out.println();
-            }
-        }
-    }
 }

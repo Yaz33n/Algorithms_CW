@@ -1,15 +1,12 @@
 package algo;
 
-import gui.SquaredGrid;
-
 import java.util.*;
-import java.util.logging.Logger;
 
-public class AStarAlgorithm {
+public class PathFindingAlgorithm {
 
     /*Determining the selected distance based metric for heuristic value*/
     public enum Heuristic {
-        MANHATTAN, EUCLIDEAN, CHEBYSHEV
+        MANHATTAN, EUCLIDEAN, CHEBYSHEV, NONE
     }
 
     /*Directions for finding the surrounding(neighbouring) nodes*/
@@ -26,17 +23,13 @@ public class AStarAlgorithm {
     private Set<Node> closedSet; // Closed Set stores all the evaluated nodes.
     private List<Node> finalPathNodes; // Stores the final backtracked path.
 
-    SquaredGrid grid;
-
-    public AStarAlgorithm(int[][] graph, int sYPos /*Row*/, int sXPos/*Col*/,
-                          int tYPos/*Row*/, int tXPos/*Col*/, Heuristic sMetric, SquaredGrid grid) {
+    public PathFindingAlgorithm(int[][] graph, int sYPos, int sXPos, int tYPos, int tXPos, Heuristic sMetric) {
         this.graph = graph;
         this.sourceYRowPos = sYPos;
         this.sourceXColPos = sXPos;
         this.targetYRowPos = tYPos;
         this.targetXColPos = tXPos;
         this.selectedMetric = sMetric;
-        this.grid = grid;
 
         // Sorted by Ascending order of fCost
         //overriding the compare method to compare two nodes from the fCost
@@ -61,7 +54,6 @@ public class AStarAlgorithm {
                 node.setHCost(getHeuristicVal(node, selectedMetric));
                 // Sets the node weight as given in the actual map.
                 node.setNodeWeight(graph[y][x]);
-//                System.out.println("Node " + y + " " + x + " H: " + node.getHCost());
                 matrix[y][x] = node /* Adds the newly created node (y,x)*/;
             }
         }
@@ -98,15 +90,13 @@ public class AStarAlgorithm {
 
             currentNode = openSet.poll(); // Retrieves and removes the head of this set.
             /*Checks whether the current looking node is the destination/target node*/
-            if (currentNode.equals(endNode) || currentNode.getHCost() == 0) {
-                // System.out.println("Reached To The End"); // For Debug Purposes
+            if (currentNode.equals(endNode)) {
                 reConstructPath(currentNode); // Get the original shortest path
                 break; // Break the entire loop
             }
 
             // Get the current node neighbours and check all
             for (Node neighbour : currentNode.getNeighbours()) {
-
                 if (closedSet.contains(neighbour)) continue; // No need to check this.
                 if (!neighbour.isVisited() && !neighbour.isBlocked()) {
                     // Update the GCost when moving.
@@ -124,8 +114,8 @@ public class AStarAlgorithm {
                 }
             }
 
-            currentNode.setVisited(true);
-            closedSet.add(currentNode);
+            currentNode.setVisited(true); // Set the current node as visited
+            closedSet.add(currentNode); // add the current node to the evaluated set
         }
     }
 
@@ -143,28 +133,19 @@ public class AStarAlgorithm {
     /*Y is the ROW X is the column*/
     private int[] getDirectionYX(Node node, Direction direction) {
 
-        /* Current Node X and Y Positions in the Matrix */
+
         int rowYPos = node.getYRowNo(), colXPos = node.getXColNo();
 
         switch (direction) {
-            case NORTH:
-                return new int[]{rowYPos - 1, colXPos};
-            case EAST:
-                return new int[]{rowYPos, colXPos + 1};
-            case SOUTH:
-                return new int[]{rowYPos + 1, colXPos};
-            case WEST:
-                return new int[]{rowYPos, colXPos - 1};
-            case NORTH_WEST:
-                return new int[]{rowYPos - 1, colXPos - 1};
-            case NORTH_EAST:
-                return new int[]{rowYPos - 1, colXPos + 1};
-            case SOUTH_EAST:
-                return new int[]{rowYPos + 1, colXPos + 1};
-            case SOUTH_WEST:
-                return new int[]{rowYPos + 1, colXPos - 1};
-            default:
-                return new int[]{-1 /*If No Direction*/, -1};
+            case      NORTH: return new int[]{rowYPos - 1, colXPos};
+            case       EAST: return new int[]{rowYPos, colXPos + 1};
+            case      SOUTH: return new int[]{rowYPos + 1, colXPos};
+            case       WEST: return new int[]{rowYPos, colXPos - 1};
+            case NORTH_WEST: return new int[]{rowYPos - 1, colXPos - 1};
+            case NORTH_EAST: return new int[]{rowYPos - 1, colXPos + 1};
+            case SOUTH_EAST: return new int[]{rowYPos + 1, colXPos + 1};
+            case SOUTH_WEST: return new int[]{rowYPos + 1, colXPos - 1};
+            default:         return new int[]{-1 /*If No Direction*/, -1};
         }
 
     }
@@ -177,10 +158,11 @@ public class AStarAlgorithm {
             return Math.sqrt(Math.pow(cNode.getXColNo() - targetXColPos, 2) + Math.pow(cNode.getYRowNo() - targetYRowPos, 2));
         } else if (type == Heuristic.CHEBYSHEV) {
             return Math.max(Math.abs(cNode.getXColNo() - targetXColPos), Math.abs(cNode.getYRowNo() - targetYRowPos));
-        } else {
-            throw new UnsupportedOperationException("Invalid Heuristic Type.\n" +
-                    "Supported Types: AStarAlgorithm.Heuristic.? (MANHATTAN, EUCLIDEAN, CHEBYSHEV)");
+        } else if (type == Heuristic.NONE){
+            return 0.0;
         }
+
+        return 0.0; // Zero H
     }
 
     public List<Node> getFinalPathNodes() {
