@@ -49,8 +49,8 @@ public class ControlPanel extends AnchorPane {
                 cbShowGridWeight, cbShowActualMap, cbShowGridColored, spInputs, spOperations, btnReset, btnFSP,
                 lblResult, resultText);
 
-        /* Doubling Hypothesis :: 1 is default */
-        grid = new SquaredGrid(this); // Creating the grid
+        // Creating the grid
+        grid = new SquaredGrid(this);
 
         stageForGraph = new Stage(StageStyle.DECORATED);
         stageForGraph.setTitle("PATH FINDING ON SQUARED GRID");
@@ -99,26 +99,26 @@ public class ControlPanel extends AnchorPane {
 
     private void initRadioButtons() {
 
-        this.rbManhattan = new RadioButton("Manhattan"); // Creates the radio button
-        this.rbManhattan.setPrefSize(87.0, 28.0); // Setting the preferred sizes
-        this.rbManhattan.setLayoutX(250.0); // Sets the element in X axis
-        this.rbManhattan.setLayoutY(152.0); // Sets the element in Y axis
-        this.rbManhattan.setFont(new Font(13));
-        this.rbManhattan.setTextFill(Paint.valueOf("#1aff00")); // Change the color in radio button text
+        rbManhattan = new RadioButton("Manhattan"); // Creates the radio button
+        rbManhattan.setPrefSize(87.0, 28.0); // Setting the preferred sizes
+        rbManhattan.setLayoutX(250.0); // Sets the element in X axis
+        rbManhattan.setLayoutY(152.0); // Sets the element in Y axis
+        rbManhattan.setFont(new Font(13));
+        rbManhattan.setTextFill(Paint.valueOf("#1aff00")); // Change the color in radio button text
 
-        this.rbEuclidean = new RadioButton("Euclidean"); // Creates the radio button
-        this.rbEuclidean.setPrefSize(87.0, 28.0); // Setting the preferred sizes
-        this.rbEuclidean.setLayoutX(365.0); // Sets the element in X axis
-        this.rbEuclidean.setLayoutY(152.0); // Sets the element in Y axis
-        this.rbEuclidean.setFont(new Font(13));
-        this.rbEuclidean.setTextFill(Paint.valueOf("#ff8686")); // Change the color in radio button text
+        rbEuclidean = new RadioButton("Euclidean"); // Creates the radio button
+        rbEuclidean.setPrefSize(87.0, 28.0); // Setting the preferred sizes
+        rbEuclidean.setLayoutX(365.0); // Sets the element in X axis
+        rbEuclidean.setLayoutY(152.0); // Sets the element in Y axis
+        rbEuclidean.setFont(new Font(13));
+        rbEuclidean.setTextFill(Paint.valueOf("#ff8686")); // Change the color in radio button text
 
-        this.rbChebyshev = new RadioButton("Chebyshev"); // Creates the radio button
-        this.rbChebyshev.setPrefSize(87.0, 28.0); // Setting the preferred sizes
-        this.rbChebyshev.setLayoutX(470.0); // Sets the element in X axis
-        this.rbChebyshev.setLayoutY(152.0); // Sets the element in Y axis
-        this.rbChebyshev.setFont(new Font(13));
-        this.rbChebyshev.setTextFill(Paint.valueOf("#ffcb3e")); // Change the color in radio button text
+        rbChebyshev = new RadioButton("Chebyshev"); // Creates the radio button
+        rbChebyshev.setPrefSize(87.0, 28.0); // Setting the preferred sizes
+        rbChebyshev.setLayoutX(470.0); // Sets the element in X axis
+        rbChebyshev.setLayoutY(152.0); // Sets the element in Y axis
+        rbChebyshev.setFont(new Font(13));
+        rbChebyshev.setTextFill(Paint.valueOf("#ffcb3e")); // Change the color in radio button text
 
         ToggleGroup toggleGMetrics = new ToggleGroup();
         toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
@@ -129,7 +129,6 @@ public class ControlPanel extends AnchorPane {
             rbEuclidean.setDisable(true);
             rbChebyshev.setDisable(true);
         }
-
 
     }
 
