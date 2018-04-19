@@ -13,6 +13,7 @@ import javafx.stage.StageStyle;
 
 public class ControlPanel extends AnchorPane {
 
+    private static final int MILLISECONDS = 1000000;
     /*GUI COMPONENTS*/
     private static Stage stageForGraph;
     private static Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
@@ -22,7 +23,6 @@ public class ControlPanel extends AnchorPane {
     private static CheckBox cbShowGridNumbers, cbShowGridWeight, cbShowActualMap, cbShowGridColored;
     private static Separator spInputs, spOperations;
     private static Button btnReset, btnFSP;
-
 
     private static SquaredGrid grid;
     private static boolean useHeuristics;
@@ -204,25 +204,34 @@ public class ControlPanel extends AnchorPane {
 
     private void initButtons() {
 
-        this.btnReset = new Button("RESET");
-        this.btnReset.setId("btnReset");
-        this.btnReset.setLayoutX(509.0);
-        this.btnReset.setLayoutY(56.0);
+        btnReset = new Button("RESET");
+        btnReset.setId("btnReset");
+        btnReset.setLayoutX(509.0);
+        btnReset.setLayoutY(56.0);
 
-        this.btnFSP = new Button("FIND SHORTEST PATH");
-        this.btnFSP.setFont(new Font("System Bold", 18.0));
-        this.btnFSP.setTextFill(Color.DARKGRAY);
-        this.btnFSP.setLayoutX(176.0);
-        this.btnFSP.setLayoutY(258.0);
-        this.btnFSP.setPrefSize(246.0, 42.0);
+        btnFSP = new Button("FIND SHORTEST PATH");
+        btnFSP.setFont(new Font("System Bold", 18.0));
+        btnFSP.setTextFill(Color.DARKGRAY);
+        btnFSP.setLayoutX(176.0);
+        btnFSP.setLayoutY(258.0);
+        btnFSP.setPrefSize(246.0, 42.0);
     }
 
     private void addEventHandlers() {
 
+        /* Add/Clears cell coordinates in the gridPane. */
         cbShowGridNumbers.setOnAction(e -> grid.viewGridNumbers(cbShowGridNumbers.isSelected()));
+
+        /* Add/Clear node weights in the gridPane. */
         cbShowGridWeight.setOnAction(e -> grid.viewNodeWeights(cbShowGridWeight.isSelected()));
+
+        /* Hide/Reveal the colored cells in weighted coordinates. */
         cbShowGridColored.setOnAction(e -> grid.viewColoredGrid(cbShowGridColored.isSelected()));
+
+        /* Hide/Reveal the Actual map in the grid. */
         cbShowActualMap.setOnAction(e -> grid.viewActualMap(cbShowActualMap.isSelected()));
+
+        /* Resets all the changes made to the UI */
         btnReset.setOnAction(e -> {
 
             cbShowGridWeight.setSelected(false);
@@ -239,10 +248,18 @@ public class ControlPanel extends AnchorPane {
             txtSourceRow.setText("");
             txtTargetCol.setText("");
             txtTargetRow.setText("");
+            resultText.setText("");
         });
+
         btnFSP.setOnAction(e -> {
 
-            // Clear the existing path or use different colors to each path TODO
+            /*
+             * This method will initiate the PathFindingAlgorithm Class.
+             * The User will choose whether use heuristics or use the exhaustive search.
+             * The user will choose the graph zoom level(Doubling hypothesis value)
+             */
+
+            // Clear the existing path or use different colors to each path.
             int sY = -1, sX = -1, tY = -1, tX = -1;
 
             try {
@@ -251,24 +268,31 @@ public class ControlPanel extends AnchorPane {
                 tY = Integer.parseInt(txtTargetRow.getText());
                 tX = Integer.parseInt(txtTargetCol.getText());
             } catch (NumberFormatException exception) {
-                System.out.println(exception.getMessage());
-            }
-
-            if(sY + sX + tY + tX == -4) {
                 // show alert
                 return;
             }
 
+            if (sY + sX + tY + tX == -4) {
+                // show alert
+                return;
+            }
+
+            /* SENSITIVE PART - After this, the code will never checks input exceptions. */
+
+            // Record the start time in ms.
             long startTime_Nano = System.nanoTime();
+            /*Instantiate the PathFinding class. with the static graph & source,target & selected distance metric type*/
             PathFindingAlgorithm as = new PathFindingAlgorithm(Main.graph, sY, sX, tY, tX, getHeuType());
+            /*Find the shortest path.*/
             as.findShortestPath();
-            long elapsedTime = (System.nanoTime() - startTime_Nano) / 1000000;
+            /* Record the elapsed time in milliseconds. */
+            long elapsedTime = elapsedTimeMS(startTime_Nano);
 
             resultText.setText(""); // Clear the existing text.
             StringBuilder sb = new StringBuilder();
 
             // Sets the final G cost and the elapsed time to solve the problem
-            sb.append("Elapsed Time: ").append(elapsedTime).append("ms").append("\n")
+            sb.append("Elapsed Time for the algorithm: ").append(elapsedTime).append("ms").append("\n")
                     .append("Final G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
                     .append("\n Path Through: ");
 
@@ -283,9 +307,12 @@ public class ControlPanel extends AnchorPane {
         });
     }
 
-    private void validate() {
+    private static long nanoTimeStamp() {
+        return System.nanoTime();
+    }
 
-
+    private static int elapsedTimeMS(final long start) {
+        return (int) (System.nanoTime() - start) / MILLISECONDS;
     }
 
     private PathFindingAlgorithm.Heuristic getHeuType() {
