@@ -14,9 +14,8 @@ import javafx.stage.StageStyle;
 public class ControlPanel extends AnchorPane {
 
     private Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
-    private TextField txtSourceY, txtSourceX, txtTargetY, txtTargetX;
+    private TextField txtSourceRow, txtSourceCol, txtTargetRow, txtTargetCol;
     private TextArea resultText;
-    private ToggleGroup toggleGMetrics;
     private RadioButton rbManhattan, rbChebyshev, rbEuclidean;
     private CheckBox cbShowGridNumbers, cbShowGridWeight, cbShowActualMap, cbShowGridColored;
     private Separator spInputs, spOperations;
@@ -40,8 +39,8 @@ public class ControlPanel extends AnchorPane {
 
         super.setPrefSize(600, 465);
         super.setStyle("-fx-background-color: #232323");
-        super.getChildren().addAll(lblTitle, lblSource, lblTarget, lblMetrics, txtSourceX, txtSourceY,
-                txtTargetX, txtTargetY, rbManhattan, rbChebyshev, rbEuclidean, cbShowGridNumbers,
+        super.getChildren().addAll(lblTitle, lblSource, lblTarget, lblMetrics, txtSourceCol, txtSourceRow,
+                txtTargetCol, txtTargetRow, rbManhattan, rbChebyshev, rbEuclidean, cbShowGridNumbers,
                 cbShowGridWeight, cbShowActualMap, cbShowGridColored, spInputs, spOperations, btnReset, btnFSP,
                 lblResult, resultText);
 
@@ -118,37 +117,37 @@ public class ControlPanel extends AnchorPane {
         this.rbChebyshev.setFont(new Font(13));
         this.rbChebyshev.setTextFill(Paint.valueOf("#ffcb3e")); // Change the color in radio button text
 
-        this.toggleGMetrics = new ToggleGroup(); // Creates a toggle group for metrics
-        this.toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
+        ToggleGroup toggleGMetrics = new ToggleGroup();
+        toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
         this.rbManhattan.setSelected(true); // Initial metric
 
     }
 
     private void initTextBoxes() {
 
-        this.txtSourceY = new TextField();
-        this.txtSourceY.setPromptText("rY");
-        this.txtSourceY.setLayoutX(178.0);
-        this.txtSourceY.setLayoutY(100.0);
-        this.txtSourceY.setPrefSize(47.0, 28.0);
+        this.txtSourceRow = new TextField();
+        this.txtSourceRow.setPromptText("srY");
+        this.txtSourceRow.setLayoutX(178.0);
+        this.txtSourceRow.setLayoutY(100.0);
+        this.txtSourceRow.setPrefSize(47.0, 28.0);
 
-        this.txtSourceX = new TextField();
-        this.txtSourceX.setPromptText("cX");
-        this.txtSourceX.setLayoutX(231.0);
-        this.txtSourceX.setLayoutY(100.0);
-        this.txtSourceX.setPrefSize(47.0, 28.0);
+        this.txtSourceCol = new TextField();
+        this.txtSourceCol.setPromptText("scX");
+        this.txtSourceCol.setLayoutX(231.0);
+        this.txtSourceCol.setLayoutY(100.0);
+        this.txtSourceCol.setPrefSize(47.0, 28.0);
 
-        this.txtTargetY = new TextField();
-        this.txtTargetY.setPromptText("rY");
-        this.txtTargetY.setLayoutX(463.0);
-        this.txtTargetY.setLayoutY(100.0);
-        this.txtTargetY.setPrefSize(47.0, 28.0);
+        this.txtTargetRow = new TextField();
+        this.txtTargetRow.setPromptText("trY");
+        this.txtTargetRow.setLayoutX(463.0);
+        this.txtTargetRow.setLayoutY(100.0);
+        this.txtTargetRow.setPrefSize(47.0, 28.0);
 
-        this.txtTargetX = new TextField();
-        this.txtTargetX.setPromptText("cX");
-        this.txtTargetX.setLayoutX(516.0);
-        this.txtTargetX.setLayoutY(100.0);
-        this.txtTargetX.setPrefSize(47.0, 28.0);
+        this.txtTargetCol = new TextField();
+        this.txtTargetCol.setPromptText("tcX");
+        this.txtTargetCol.setLayoutX(516.0);
+        this.txtTargetCol.setLayoutY(100.0);
+        this.txtTargetCol.setPrefSize(47.0, 28.0);
 
         this.resultText = new TextArea("No Results Yet!");
         this.resultText.setPrefSize(538.0, 74.0);
@@ -217,21 +216,13 @@ public class ControlPanel extends AnchorPane {
 
     private void addEventHandlers() {
 
-        cbShowGridNumbers.setOnAction(e -> {
-            grid.viewGridNumbers(cbShowGridNumbers.isSelected());
-        });
+        cbShowGridNumbers.setOnAction(e -> grid.viewGridNumbers(cbShowGridNumbers.isSelected()));
 
-        cbShowGridWeight.setOnAction(e -> {
-            grid.viewNodeWeights(cbShowGridWeight.isSelected());
-        });
+        cbShowGridWeight.setOnAction(e -> grid.viewNodeWeights(cbShowGridWeight.isSelected()));
 
-        cbShowGridColored.setOnAction(e -> {
-            grid.viewColoredGrid(cbShowGridColored.isSelected());
-        });
+        cbShowGridColored.setOnAction(e -> grid.viewColoredGrid(cbShowGridColored.isSelected()));
 
-        cbShowActualMap.setOnAction(e -> {
-            grid.viewActualMap(cbShowActualMap.isSelected());
-        });
+        cbShowActualMap.setOnAction(e -> grid.viewActualMap(cbShowActualMap.isSelected()));
 
         btnReset.setOnAction(e -> {
 
@@ -245,18 +236,18 @@ public class ControlPanel extends AnchorPane {
             grid.viewActualMap(false);
             grid.viewColoredGrid(false);
 
-            txtSourceX.setText("");
-            txtSourceY.setText("");
-            txtTargetX.setText("");
-            txtTargetY.setText("");
+            txtSourceCol.setText("");
+            txtSourceRow.setText("");
+            txtTargetCol.setText("");
+            txtTargetRow.setText("");
         });
 
         btnFSP.setOnAction(e -> {
 
-            int sX = Integer.parseInt(txtSourceX.getText());
-            int sY = Integer.parseInt(txtSourceY.getText());
-            int tX = Integer.parseInt(txtTargetX.getText());
-            int tY = Integer.parseInt(txtTargetY.getText());
+            int sY = Integer.parseInt(txtSourceRow.getText());
+            int sX = Integer.parseInt(txtSourceCol.getText());
+            int tY = Integer.parseInt(txtTargetRow.getText());
+            int tX = Integer.parseInt(txtTargetCol.getText());
 
             System.out.println(sY + " " + sX + " | " + tY + " " + tX);
             AStarAlgorithm.Heuristic type;
@@ -273,40 +264,41 @@ public class ControlPanel extends AnchorPane {
 
             long startTime_Nano = System.nanoTime();
             AStarAlgorithm as = new AStarAlgorithm(Main.graph, sY, sX, tY, tX, type, grid);
+
+            for(Node nei: as.getMatrix()[0][6].getNeighbours()) {
+                System.out.println(nei);
+            }
+
             as.findShortestPath();
             long elapsedTime = (System.nanoTime() - startTime_Nano) / 1000000;
 
             resultText.setText("Elapsed Time: " + elapsedTime + "ms" + "\n"
-                    + "Final G Cost: " + as.getMatrix()[tX][tY].getGCost());
+                    + "Final G Cost: " + as.getMatrix()[tY][tX].getGCost());
 
-//            for (Node n : as.getMatrix()[19][0].getNeighbours()) {
-//                System.out.println(n.getYPos() + " " + n.getXPos());
-//            }
 
-            grid.drawPath(as.getFinalPathNodes());
+            for(Node nei: as.getFinalPathNodes()) {
+                System.out.println("F NODE" + nei.getYRowNo() + ", " + nei.getXColNo());
+            }
+//            grid.drawPath(as.getFinalPathNodes());
 
         });
 
     }
 
-    public TextField getTxtSourceX() {
-        return txtSourceX;
+    public TextField getTxtSourceCol() {
+        return txtSourceCol;
     }
 
-    public TextField getTxtSourceY() {
-        return txtSourceY;
+    public TextField getTxtSourceRow() {
+        return txtSourceRow;
     }
 
-    public TextField getTxtTargetX() {
-        return txtTargetX;
+    public TextField getTxtTargetCol() {
+        return txtTargetCol;
     }
 
-    public TextField getTxtTargetY() {
-        return txtTargetY;
-    }
-
-    public ToggleGroup getToggleGMetrics() {
-        return toggleGMetrics;
+    public TextField getTxtTargetRow() {
+        return txtTargetRow;
     }
 
     public CheckBox getCbShowGridNumbers() {
@@ -315,14 +307,6 @@ public class ControlPanel extends AnchorPane {
 
     public CheckBox getCbShowGridWeight() {
         return cbShowGridWeight;
-    }
-
-    public CheckBox getCbShowActualMap() {
-        return cbShowActualMap;
-    }
-
-    public CheckBox getCbShowGridColored() {
-        return cbShowGridColored;
     }
 
     public Stage getStageForGraph() {

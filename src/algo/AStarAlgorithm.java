@@ -17,7 +17,7 @@ public class AStarAlgorithm {
         NORTH, EAST, SOUTH, WEST, NORTH_WEST, NORTH_EAST, SOUTH_WEST, SOUTH_EAST
     }
 
-    private int sourceYPos, sourceXPos, targetYPos, targetXPos; // Row|Col Row|Col
+    private int sourceYRowPos, sourceXColPos, targetYRowPos, targetXColPos; // Row|Col Row|Col
     private Heuristic selectedMetric; // User selected :: distance based metric calculation method
     private int[][] graph; // Skeleton graph with weights
     private Node[][] matrix; // Node Matrix to holdall the node objects.
@@ -31,28 +31,16 @@ public class AStarAlgorithm {
     public AStarAlgorithm(int[][] graph, int sYPos /*Row*/, int sXPos/*Col*/,
                           int tYPos/*Row*/, int tXPos/*Col*/, Heuristic sMetric, SquaredGrid grid) {
         this.graph = graph;
-        this.sourceYPos = sYPos;
-        this.sourceXPos = sXPos;
-        this.targetYPos = tYPos;
-        this.targetXPos = tXPos;
+        this.sourceYRowPos = sYPos;
+        this.sourceXColPos = sXPos;
+        this.targetYRowPos = tYPos;
+        this.targetXColPos = tXPos;
         this.selectedMetric = sMetric;
         this.grid = grid;
 
         // Sorted by Ascending order of fCost
-        openSet = new PriorityQueue<>(new Comparator<Node>() {
-
-            //overriding the compare method to compare two nodes from the fCost
-            @Override
-            public int compare(Node current, Node next) {
-                if (current.getFCost() < next.getFCost()) {
-                    return -1;
-                } else if (current.getFCost() > next.getFCost()) {
-                    return 1;
-                } else {
-                    return 0;
-                }
-            }
-        });
+        //overriding the compare method to compare two nodes from the fCost
+        openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
         closedSet = new HashSet<>();
         finalPathNodes = new ArrayList<>();
 
@@ -73,6 +61,7 @@ public class AStarAlgorithm {
                 node.setHCost(getHeuristicVal(node, selectedMetric));
                 // Sets the node weight as given in the actual map.
                 node.setNodeWeight(graph[y][x]);
+//                System.out.println("Node " + y + " " + x + " H: " + node.getHCost());
                 matrix[y][x] = node /* Adds the newly created node (y,x)*/;
             }
         }
@@ -85,13 +74,9 @@ public class AStarAlgorithm {
                 /*Cycle through each direction*/
                 for (Direction d : Direction.values()) {
                     int[] dir = getDirectionYX(n/*Check Node*/, d/*Direction*/);
-                    try {
-                        // Aggressively throws IndexOutOfBoundsException
-                        n.addNeighbours(matrix[dir[0 /*Row*/]][dir[1 /*Col*/]]);
-                    } catch (IndexOutOfBoundsException e) {
-                        Logger.getLogger(getClass().getName())
-                                .warning("INDEX OUT-OF-RANGE " + d.toString() + " | " + e.getMessage());
-                    }
+                    int row = dir[0], col = dir[1], length = matrix.length;
+                    if (row >= length || row < 0 || col >= length || col < 0) continue;
+                    n.addNeighbours(matrix[row][col]);
                 }
             }
         }
@@ -99,11 +84,11 @@ public class AStarAlgorithm {
 
     public void findShortestPath() {
 
-        Node startNode = matrix[sourceYPos][sourceXPos]; // Find and assign the Source Node
-        Node endNode = matrix[targetYPos][targetXPos]; // Find and assign the Target Node
+        Node startNode = matrix[sourceYRowPos][sourceXColPos]; // Find and assign the Source Node
+        Node endNode = matrix[targetYRowPos][targetXColPos]; // Find and assign the Target Node
 
         startNode.setGCost(0); // The cost of going from Source to Source is zero.
-        startNode.setParent(null); // Setting the parent as null because this is the sourcePos
+        startNode.setParent(null); // Setting the parent as null because this is the starting node
 
         openSet.add(startNode); // Adding the current node to the openSet
         Node currentNode; // Represents the current node that looking at
@@ -111,41 +96,33 @@ public class AStarAlgorithm {
         /*While openSet is not empty we can keep going*/
         while (!openSet.isEmpty()) {
 
-            currentNode = openSet.poll();
-            currentNode.setVisited(true);
-            closedSet.add(currentNode);
+            currentNode = openSet.poll(); // Retrieves and removes the head of this node.
 
             /*Checks whether the current looking node is the destination/target node*/
             if (currentNode.equals(endNode) || currentNode.getHCost() == 0) {
-                System.out.println("Reached To The End"); // For Debug Purposes
-                closedSet.add(currentNode); // Add to the closed set
-                backtrackToOrigin(currentNode); // Get the original shortest path
+                // System.out.println("Reached To The End"); // For Debug Purposes
+                reConstructPath(currentNode); // Get the original shortest path
                 break; // Break the entire loop
             }
 
             // Get the current node neighbours and check all
             for (Node neighbour : currentNode.getNeighbours()) {
-                if (!neighbour.isVisited() && !neighbour.isBlocked() && !closedSet.contains(neighbour)) {
 
-                    grid.colorNeighbours(neighbour.getYPos(), neighbour.getXPos());
+                if (closedSet.contains(neighbour)) continue; // No need to check this.
+
+                if (!neighbour.isVisited() && !neighbour.isBlocked()) {
+                    // Update the GCost when moving.
                     /*Get the CurrentNodeGCost and and add the Next Node Weight as the Distance*/
                     final double tentativeGScore = currentNode.getGCost() + neighbour.getNodeWeight();
                     /*The new F cost will be the past nodes' GScore + the neighbours distance from the target*/
                     final double newFCost = neighbour.getGCost() + neighbour.getHCost();
-//                    if (!openSet.contains(neighbour)) {
-//                        openSet.add(neighbour);
-//                    } else if (newFCost < neighbour.getGCost()) {
-//                        neighbour.setGCost(tentativeGScore);
-//                        neighbour.setParent(currentNode);
-//
-//                        if (!openSet.contains(neighbour))
-//                            openSet.add(neighbour); // Adding the next neighbour
-//                    }
+
                     if (!openSet.contains(neighbour)) {
-                        openSet.add(neighbour);
-                    } else if (newFCost >= neighbour.getGCost()) {
-                        // Bad Move
-                        continue;
+                        // System.out.println("NEI IS NOT IN OPEN SET " + neighbour.getYRowNo() + "," + neighbour.getXColNo());
+                        openSet.add(neighbour); // Discovers a new node
+                        grid.colorNeighbours(neighbour.getYRowNo(), neighbour.getXColNo());
+                    } else if (tentativeGScore >= neighbour.getGCost()) {
+                        continue; // Bad Move skip this
                     }
 
                     neighbour.setParent(currentNode);
@@ -153,17 +130,20 @@ public class AStarAlgorithm {
                     neighbour.setFCost(newFCost);
                 }
             }
+
+            currentNode.setVisited(true);
+            closedSet.add(currentNode);
         }
     }
 
-    private void backtrackToOrigin(Node node) {
+    private void reConstructPath(Node node) {
 
         Node fNode = node; // Assigns the Node without conflicting with the original.
         finalPathNodes.add(fNode); // Adding Target Node first.
 
         while (fNode.getParent() != null) {
-            fNode = fNode.getParent();
             finalPathNodes.add(fNode);
+            fNode = fNode.getParent();
         }
     }
 
@@ -171,7 +151,7 @@ public class AStarAlgorithm {
     private int[] getDirectionYX(Node node, Direction direction) {
 
         /* Current Node X and Y Positions in the Matrix */
-        int rowYPos = node.getYPos(), colXPos = node.getXPos();
+        int rowYPos = node.getYRowNo(), colXPos = node.getXColNo();
 
         switch (direction) {
             case NORTH:
@@ -199,11 +179,11 @@ public class AStarAlgorithm {
     private double getHeuristicVal(Node cNode, Heuristic type) {
 
         if (type == Heuristic.MANHATTAN) {
-            return Math.abs(cNode.getXPos() - targetXPos) + Math.abs(cNode.getYPos() - targetYPos);
+            return Math.abs(cNode.getXColNo() - targetXColPos) + Math.abs(cNode.getYRowNo() - targetYRowPos);
         } else if (type == Heuristic.EUCLIDEAN) {
-            return Math.sqrt(Math.pow(cNode.getXPos() - targetXPos, 2) + Math.pow(cNode.getYPos() - targetYPos, 2));
+            return Math.sqrt(Math.pow(cNode.getXColNo() - targetXColPos, 2) + Math.pow(cNode.getYRowNo() - targetYRowPos, 2));
         } else if (type == Heuristic.CHEBYSHEV) {
-            return Math.max(Math.abs(cNode.getXPos() - targetXPos), Math.abs(cNode.getYPos() - targetYPos));
+            return Math.max(Math.abs(cNode.getXColNo() - targetXColPos), Math.abs(cNode.getYRowNo() - targetYRowPos));
         } else {
             throw new UnsupportedOperationException("Invalid Heuristic Type.\n" +
                     "Supported Types: AStarAlgorithm.Heuristic.? (MANHATTAN, EUCLIDEAN, CHEBYSHEV)");

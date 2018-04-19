@@ -16,14 +16,14 @@ public class Node {
     private double fCost; // The total cost (g + h)
     private double nodeWeight; // Weight of this node
 
-    private int xPos; // The row number of this node in the graph (Matrix)
-    private int yPos; // The column number of this node in the graph (Matrix)
+    private int yRowNo; // The row number of this node in the graph (Matrix)
+    private int xColNo; // The column number of this node in the graph (Matrix)
 
     private List<Node> neighbours; // Neighbours of this node.
 
-    Node(int yPos, int xPos, boolean blocked) {
-        this.yPos = yPos;
-        this.xPos = xPos;
+    Node(int yRowNo, int xColNo, boolean blocked) {
+        this.yRowNo = yRowNo;
+        this.xColNo = xColNo;
         this.blocked = blocked;
         this.neighbours = new ArrayList<>();
     }
@@ -61,12 +61,12 @@ public class Node {
         return nodeWeight;
     }
 
-    public int getXPos() {
-        return xPos;
+    public int getYRowNo() {
+        return yRowNo;
     }
 
-    public int getYPos() {
-        return yPos;
+    public int getXColNo() {
+        return xColNo;
     }
 
     public List<Node> getNeighbours() {
@@ -108,8 +108,8 @@ public class Node {
                 Double.compare(node.hCost, hCost) == 0 &&
                 Double.compare(node.fCost, fCost) == 0 &&
                 Double.compare(node.nodeWeight, nodeWeight) == 0 &&
-                xPos == node.xPos &&
-                yPos == node.yPos &&
+                yRowNo == node.yRowNo &&
+                xColNo == node.xColNo &&
                 Objects.equals(parent, node.parent) &&
                 Objects.equals(neighbours, node.neighbours);
     }
@@ -117,14 +117,14 @@ public class Node {
     @Override
     public String toString() {
         return "Node{" +
-                "  parent=" + parent +
+                "parent=" + parent +
                 ", blocked=" + blocked +
                 ", visited=" + visited +
                 ", gCost=" + gCost +
                 ", hCost=" + hCost +
                 ", fCost=" + fCost +
                 ", nodeWeight=" + nodeWeight +
-                ", xPos=" + xPos +
-                ", yPos=" + yPos + "  }";
+                ", yRowNo=" + yRowNo +
+                ", xColNo=" + xColNo + '}';
     }
 }

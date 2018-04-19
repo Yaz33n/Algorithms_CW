@@ -111,16 +111,16 @@ public class SquaredGrid extends AnchorPane {
 
                         if (e.getButton() == MouseButton.PRIMARY) {
                             if (graph[row][col] != 0) { // Checking if the node is blocked
-                                controlPanelView.getTxtSourceY().setText(String.valueOf(row));
-                                controlPanelView.getTxtSourceX().setText(String.valueOf(col));
+                                controlPanelView.getTxtSourceRow().setText(String.valueOf(row));
+                                controlPanelView.getTxtSourceCol().setText(String.valueOf(col));
                             } else {
                                 showAlert("Source Node blocked!", "The Node col: " + col + ", row: " + row
                                         + " is blocked. You cannot set this as your Source destination");
                             }
                         } else if (e.getButton() == MouseButton.SECONDARY) {
                             if (graph[row][col] != 0) { // Checking if the node is blocked
-                                controlPanelView.getTxtTargetY().setText(String.valueOf(row));
-                                controlPanelView.getTxtTargetX().setText(String.valueOf(col));
+                                controlPanelView.getTxtTargetRow().setText(String.valueOf(row));
+                                controlPanelView.getTxtTargetCol().setText(String.valueOf(col));
                             } else {
                                 showAlert("Target Node blocked!", "The Node col: " + col + ", row: " + row
                                         + " is blocked. You cannot set this as your Target destination");
@@ -214,17 +214,17 @@ public class SquaredGrid extends AnchorPane {
 
     public void drawPath(List<Node> finalPath) {
         for (Node n : finalPath) {
-            Rectangle p = new Rectangle(recDimensions / 1.3, recDimensions / 1.3);
-            p.setStroke(Color.BLACK);
+            Rectangle p = new Rectangle(recDimensions / 1.2, recDimensions / 1.2);
+            p.setStroke(Color.TRANSPARENT);
             p.setFill(Color.GREEN);
-            System.out.println(n.getYPos() + ", " + n.getXPos());
-            this.gridPane.add(p, n.getXPos(), n.getYPos());
+            System.out.println(n.getYRowNo() + ", " + n.getXColNo());
+            this.gridPane.add(p, n.getXColNo(), n.getYRowNo());
         }
     }
 
     public void colorNeighbours(int row, int col) {
-        Rectangle p = new Rectangle(recDimensions / 1.2, recDimensions / 1.2);
-        p.setStroke(Color.BLACK);
+        Rectangle p = new Rectangle(recDimensions / 1.1, recDimensions / 1.1);
+        p.setStroke(Color.TRANSPARENT);
         p.setFill(Color.RED);
         this.gridPane.add(p, col, row);
     }
