@@ -3,7 +3,6 @@ package gui;
 import algo.Node;
 import javafx.application.Platform;
 import javafx.geometry.HPos;
-import javafx.geometry.Insets;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
 import javafx.scene.control.Alert;
@@ -18,52 +17,51 @@ import javafx.scene.text.Font;
 import javafx.scene.text.FontSmoothingType;
 import javafx.scene.text.Text;
 
-import java.util.Arrays;
 import java.util.List;
 import java.util.Vector;
-import java.util.stream.IntStream;
 
 public class SquaredGrid extends AnchorPane {
 
-    private static ControlPanel controlPanelView; // control panel
+    /*Declaring the gridPane size for all screens 840 * 840 (PX)*/
+    private static final double gridWidthNHeight = 880d;
+    /*Adjusting the row min and pref height*/
+    private static final double rowMinAndPrefHeight = gridWidthNHeight / Main.graph.length;
+    /*Adjusting the col min and pref width*/
+    private static final double colMinAndPrefWidth = gridWidthNHeight / Main.graph.length;
+    /*Adjusting the rectangle dimensions*/
+    private static final double recDimensions = gridWidthNHeight / Main.graph.length;
+
+    private static ControlPanel controlPanelView; // control panel view
     private static GridPane gridPane;
     private static ImageView actualMap;
 
-    private Vector<Rectangle> gridBoxes;
-    private Vector<Text> gridNumbers, graphWeight;
-    private double gridWidthAndHeight, rowMinAndPrefHeight, colMinAndPrefWidth, recDimensions;
+    private static Vector<Rectangle> gridBoxes, lastDrawnPath;
+    private static Vector<Text> gridNumbers, graphWeight;
+    private static Vector<Circle> lastCheckedNeighbours;
+    private static Rectangle startPosRec, targetPosRec;
 
     SquaredGrid(ControlPanel controlPanelView) {
-
         SquaredGrid.controlPanelView = controlPanelView;
         gridPane = new GridPane();
-        this.gridWidthAndHeight = 840; // Setting the width and height
-        this.rowMinAndPrefHeight = 20 / 2; // Adjusting the row height
-        this.colMinAndPrefWidth = 20 / 2; // Adjusting the col width
-        this.recDimensions = 45; // Adjusting the rectangle dimensions
-
         initLayoutComponents();
     }
 
     private void initLayoutComponents() {
 
-//         Setting up the main anchor pane
-        setPrefSize(gridWidthAndHeight, gridWidthAndHeight);
+        // Setting up the main anchor pane
+        setPrefSize(gridWidthNHeight, gridWidthNHeight);
         setStyle("-fx-background-color: #232323");
 
-//        this.setId("sGAnchorPane");
-
-//         Initializing the inner gridPane
         gridPane.setLayoutX(10);
         gridPane.setLayoutY(10);
         gridPane.setAlignment(Pos.CENTER);
-//        gridPane.setGridLinesVisible(true);
-        gridPane.setPrefSize(gridWidthAndHeight, gridWidthAndHeight);
+        gridPane.setGridLinesVisible(true);
+        gridPane.setPrefSize(gridWidthNHeight, gridWidthNHeight);
 
         for (int[] ignored /* Element Ignored */ : Main.graph) {
             // Adding the rows to the GridPane
             RowConstraints row = new RowConstraints();
-            row.setVgrow(Priority.SOMETIMES);
+            row.setVgrow(Priority.ALWAYS);
             row.setMinHeight(rowMinAndPrefHeight);
             row.setPrefHeight(rowMinAndPrefHeight);
             row.setValignment(VPos.CENTER);
@@ -71,7 +69,7 @@ public class SquaredGrid extends AnchorPane {
 
             // Adding columns for the GridPane
             ColumnConstraints col = new ColumnConstraints();
-            col.setHgrow(Priority.SOMETIMES);
+            col.setHgrow(Priority.ALWAYS);
             col.setMinWidth(colMinAndPrefWidth);
             col.setPrefWidth(colMinAndPrefWidth);
             col.setHalignment(HPos.CENTER);
@@ -79,16 +77,25 @@ public class SquaredGrid extends AnchorPane {
         }
 
         // This is for reference add/remove elements.
-        this.gridBoxes = new Vector<>();
-        this.gridNumbers = new Vector<>();
-        this.graphWeight = new Vector<>();
+        gridBoxes = new Vector<>();
+        gridNumbers = new Vector<>();
+        graphWeight = new Vector<>();
+        lastDrawnPath = new Vector<>();
+        lastCheckedNeighbours = new Vector<>();
+
+        startPosRec = new Rectangle(recDimensions / 2, recDimensions / 2);
+        startPosRec.setStroke(Color.TRANSPARENT);
+        startPosRec.setFill(Color.LIGHTGREEN);
+
+        targetPosRec = new Rectangle(recDimensions / 2, recDimensions / 2);
+        targetPosRec.setStroke(Color.TRANSPARENT);
+        targetPosRec.setFill(Color.DARKRED);
 
         addGridBoxes(); // Adding the rectangles in to each box
         getChildren().add(gridPane); // setting the gridPane inside to the anchorPane
     }
 
     private void addGridBoxes() {
-
         Platform.runLater(() -> {
             for (int r = 0; r < Main.graph.length; r++) {
                 for (int c = 0; c < Main.graph[r].length; c++) {
@@ -103,7 +110,6 @@ public class SquaredGrid extends AnchorPane {
 
                     // adding the event listener for the mouse.
                     rec.setOnMouseClicked(e -> {
-
                         controlPanelView.getCbShowGridNumbers().setSelected(false);
                         controlPanelView.getCbShowGridWeight().setSelected(false);
                         viewGridNumbers(false);
@@ -111,19 +117,21 @@ public class SquaredGrid extends AnchorPane {
 
                         if (e.getButton() == MouseButton.PRIMARY) {
                             if (Main.graph[row][col] != 0) { // Checking if the node is blocked
+                                gridPane.getChildren().remove(startPosRec);
                                 controlPanelView.getTxtSourceRow().setText(String.valueOf(row));
                                 controlPanelView.getTxtSourceCol().setText(String.valueOf(col));
+                                gridPane.add(startPosRec, col, row);
                             } else {
-                                showAlert("Source Node blocked!", "The Node col: " + col + ", row: " + row
-                                        + " is blocked. You cannot set this as your Source destination");
+                                Utils.alertWarning("Source Node blocked!");
                             }
                         } else if (e.getButton() == MouseButton.SECONDARY) {
                             if (Main.graph[row][col] != 0) { // Checking if the node is blocked
+                                gridPane.getChildren().remove(targetPosRec);
                                 controlPanelView.getTxtTargetRow().setText(String.valueOf(row));
                                 controlPanelView.getTxtTargetCol().setText(String.valueOf(col));
+                                gridPane.add(targetPosRec, col, row);
                             } else {
-                                showAlert("Target Node blocked!", "The Node col: " + col + ", row: " + row
-                                        + " is blocked. You cannot set this as your Target destination");
+                                Utils.alertWarning("Target Node blocked!");
                             }
                         }
                     });
@@ -148,9 +156,8 @@ public class SquaredGrid extends AnchorPane {
     }
 
     public void viewGridNumbers(final boolean show) {
-
         Platform.runLater(() -> {
-            if (show) {
+            if (show)
                 for (int r = 0; r < Main.graph.length; r++) {
                     for (int c = 0; c < Main.graph[r].length; c++) {
                         Text helper = new Text(r + "," + c);
@@ -161,13 +168,9 @@ public class SquaredGrid extends AnchorPane {
                         gridPane.add(helper, c, r);
                     }
                 }
-            } else {
-                if (gridNumbers != null && gridNumbers.size() > 0)
-                    gridPane.getChildren().removeAll(gridNumbers);
-
-            }
+            else if (gridNumbers != null && gridNumbers.size() > 0)
+                gridPane.getChildren().removeAll(gridNumbers);
         });
-
     }
 
     public void viewNodeWeights(final boolean show) {
@@ -187,7 +190,6 @@ public class SquaredGrid extends AnchorPane {
             else if (graphWeight != null && graphWeight.size() > 0)
                 gridPane.getChildren().removeAll(graphWeight);
         });
-
     }
 
     public void viewActualMap(boolean show) {
@@ -214,20 +216,29 @@ public class SquaredGrid extends AnchorPane {
         });
     }
 
-    public void drawPath(List<Node> finalPath) {
+    public static void drawPath(List<Node> finalPath) {
         for (Node n : finalPath) {
-            Rectangle p = new Rectangle(recDimensions / 1.2, recDimensions / 1.2);
+            Rectangle p = new Rectangle(recDimensions / 2, recDimensions / 2);
             p.setStroke(Color.TRANSPARENT);
             p.setFill(Color.GREEN);
-            System.out.println(n.getYRowNo() + ", " + n.getXColNo());
+            lastDrawnPath.add(p);
             gridPane.add(p, n.getXColNo(), n.getYRowNo());
         }
     }
 
     public static void colorCheckingNeighbours(int row, int col) {
-        Circle checked = new Circle(2, Color.VIOLET);
+        Circle checked = new Circle(2, Color.ROYALBLUE);
         checked.setStroke(Color.TRANSPARENT);
+        lastCheckedNeighbours.add(checked);
         gridPane.add(checked, col, row);
+    }
+
+    public static void removeLastDrawnPath() {
+        gridPane.getChildren().removeAll(lastDrawnPath);
+    }
+
+    public static void removeLastCheckedNeighbours() {
+        gridPane.getChildren().removeAll(lastCheckedNeighbours);
     }
 
     // Gets the Monochrome version of colors
@@ -262,14 +273,6 @@ public class SquaredGrid extends AnchorPane {
         }
     }
 
-    private void showAlert(String t, String m) {
-        Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setTitle("Grid Information");
-        alert.setHeaderText(t);
-        alert.setContentText(m);
-        alert.show();
-    }
-
     // Enumeration Class for Colors (Paints)
     private enum GridColors {
 
@@ -299,7 +302,4 @@ public class SquaredGrid extends AnchorPane {
             return paint;
         }
     }
-
-    // Zoom IN/OUT the map
-
 }

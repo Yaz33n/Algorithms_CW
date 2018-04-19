@@ -50,7 +50,7 @@ public class ControlPanel extends AnchorPane {
         grid = new SquaredGrid(this); // Creating the grid
         stageForGrid = new Stage(StageStyle.DECORATED);
         stageForGrid.setTitle("PATH FINDING ON SQUARED GRID");
-        stageForGrid.setScene(new Scene(grid, 850, 850));
+        stageForGrid.setScene(new Scene(grid, 890, 890));
         stageForGrid.setResizable(false);
         stageForGrid.show();
     }
@@ -116,7 +116,7 @@ public class ControlPanel extends AnchorPane {
         ToggleGroup toggleGMetrics = new ToggleGroup();
         toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
 
-        if(useHeuristics) {
+        if (useHeuristics) {
             rbManhattan.setSelected(true); // Initial metric
         } else {
             rbManhattan.setDisable(true);
@@ -242,68 +242,69 @@ public class ControlPanel extends AnchorPane {
             txtSourceRow.setText("");
             txtTargetCol.setText("");
             txtTargetRow.setText("");
+
             resultText.setText("");
         });
 
         btnFSP.setOnAction(e -> {
-
             btnFSP.setDisable(true); // Avoid clicking multiple times
-
-            /*
-             * The User will choose whether use heuristics or use the exhaustive search.
-             * The user will choose the graph zoom level(Doubling hypothesis value)
-             */
-
-            // Clear the existing path or use different colors to each path.
-            int sY = -1, sX = -1, tY = -1, tX = -1; // Need to assign -1
-
-            try {
-                sY = Integer.parseInt(txtSourceRow.getText());
-                sX = Integer.parseInt(txtSourceCol.getText());
-                tY = Integer.parseInt(txtTargetRow.getText());
-                tX = Integer.parseInt(txtTargetCol.getText());
-            } catch (NumberFormatException exception) {
-                Utils.alertWarning("The Coordinates either out of Range or Invalid Characters.");
-                return;
-            }
-
-            if (sY + sX + tY + tX == -4) {
-                Utils.alertWarning("Please Select Source(X,Y) and Target(X,Y) to Run the Algorithm.");
-                return;
-            } else if (sY + sX + tY + tX == 0) {
-                Utils.alertInfo("Oops, you're in the same node as the Source node!");
-                return;
-            }
-
-            // Record the start time in ms.
-            final long startTime_Nano = Utils.nanoTimeStamp();
-            /*Instantiate the PathFinding class. with the static graph & source,target & selected distance metric type*/
-            PathFindingAlgorithm as = new PathFindingAlgorithm(Main.graph, sY, sX, tY, tX, getHeuType());
-            /*Find the shortest path.*/
-            as.findShortestPath();
-            /* Record the elapsed time in milliseconds. */
-            final long elapsedTime = Utils.elapsedTimeMS(startTime_Nano);
-
-            // For efficient string concatenating.
-            StringBuilder sb = new StringBuilder();
-            // Sets the final G cost and the elapsed time to solve the problem
-            sb.append("Elapsed Time: ").append(elapsedTime).append("ms\n")
-                    .append("Final G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
-                    .append("\nExhaustive Search: ").append(!useHeuristics)
-                    .append("\nPath Through Backwards: ");
-
-            for (Node n : as.getFinalPathNodes()) // Get reconstructed path list and show
-                sb.append("-> ").append(n.getYRowNo()).append(",").append(n.getXColNo());
-
-            resultText.setText(""); // Clear the existing text.
-            resultText.setText(sb.toString()); // Set the new run results.
-            grid.drawPath(as.getFinalPathNodes());
-
+            SquaredGrid.removeLastDrawnPath();
+            SquaredGrid.removeLastCheckedNeighbours();
+            findPath();
             btnFSP.setDisable(false); // Re-Enable the button
         });
     }
 
+    private void findPath() {
 
+        /*The User will choose whether use heuristics or use the exhaustive search.*/
+        /*The user will choose the graph zoom level(Doubling hypothesis value)*/
+        /*Clear the existing path or use different colors to each path. TODO */
+
+        int sY, sX, tY, tX;
+
+        try {
+            sY = Integer.parseInt(txtSourceRow.getText());
+            sX = Integer.parseInt(txtSourceCol.getText());
+            tY = Integer.parseInt(txtTargetRow.getText());
+            tX = Integer.parseInt(txtTargetCol.getText());
+
+            if (sY + sX + tY + tX == 0) {
+                Utils.alertInfo("Oops, you're in the same node as the Source node!");
+                return;
+            } // TODO Check for negatives and Over lengthy values
+
+        } catch (NumberFormatException | UnsupportedOperationException e1) {
+            Utils.alertWarning("The Coordinates either out of Range or Invalid Characters.");
+            return;
+        }
+
+        // Record the start time in ms.
+        final long startTime_Nano = Utils.nanoTimeStamp();
+        /*Instantiate the PathFinding class. with the static graph & source,target & selected distance metric type*/
+        PathFindingAlgorithm as = new PathFindingAlgorithm(Main.graph, sY, sX, tY, tX, getHeuType());
+        /*Find the shortest path.*/
+        as.findShortestPath();
+        /* Record the elapsed time in milliseconds. */
+        final long elapsedTime = Utils.elapsedTimeMS(startTime_Nano);
+
+        // For efficient string concatenating.
+        StringBuilder sb = new StringBuilder();
+        // Sets the final G cost and the elapsed time to solve the problem
+        sb.append("Elapsed Time: ").append(elapsedTime).append("ms\n")
+                .append("Final G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
+                .append("\nExhaustive Search: ").append(!useHeuristics)
+                .append("\nPath Through Backwards: ");
+
+        for (Node n : as.getFinalPathNodes()) // Get reconstructed path list and show
+            sb.append("-> ").append(n.getYRowNo()).append(",").append(n.getXColNo());
+
+        resultText.setText(""); // Clear the existing text.
+        resultText.setText(sb.toString()); // Set the new run results.
+
+        SquaredGrid.drawPath(as.getFinalPathNodes());
+
+    }
 
     private PathFindingAlgorithm.Heuristic getHeuType() {
 

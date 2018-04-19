@@ -132,8 +132,8 @@ public class PathFindingAlgorithm {
 
         /*Initially we set the starting node parent as null. We need to travers until that*/
         while (fNode.getParent() != null) {
-            finalPathNodes.add(fNode); // Push the node to the finalPath
             fNode = fNode.getParent(); // RE-InIt with its parent
+            finalPathNodes.add(fNode); // Push the node to the finalPath
         }
     }
 
