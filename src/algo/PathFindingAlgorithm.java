@@ -1,5 +1,7 @@
 package algo;
 
+import gui.SquaredGrid;
+
 import java.util.*;
 
 public class PathFindingAlgorithm {
@@ -99,6 +101,8 @@ public class PathFindingAlgorithm {
             for (Node neighbour : currentNode.getNeighbours()) {
                 if (closedSet.contains(neighbour)) continue; // No need to check this.
                 if (!neighbour.isVisited() && !neighbour.isBlocked()) {
+
+                    SquaredGrid.colorCheckingNeighbours(neighbour.getYRowNo(), neighbour.getXColNo());
                     // Update the GCost when moving.
                     /*Get the CurrentNodeGCost and and add the Next Node Weight as the Distance*/
                     final double tentativeGScore = currentNode.getGCost() + neighbour.getNodeWeight();

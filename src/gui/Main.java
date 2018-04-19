@@ -18,7 +18,7 @@ public class Main extends Application {
     private Stage primaryStage;
     private GridPane optionsGridPane;
     private ControlPanel controlPanel;
-    private boolean useHeuristics = true;
+    private boolean useHeuristics = false;
     private int doublingHypothesisVal = 1;
 
     @Override
@@ -85,8 +85,10 @@ public class Main extends Application {
         toggleHeuristics.setId("startup_cbToggleHeuristics");
         GridPane.setMargin(toggleHeuristics, new Insets(10, 10, 10, 10));
         this.optionsGridPane.add(toggleHeuristics, 1, 2, 4, 1);
-        toggleHeuristics.setOnAction(e -> this.useHeuristics = !useHeuristics);
-        toggleHeuristics.setSelected(true);
+        toggleHeuristics.setOnAction(e -> {
+            this.useHeuristics = !useHeuristics;
+            System.out.println(useHeuristics);
+        });
 
         RadioButton rb20x20 = new RadioButton("20x20");
         rb20x20.setId("startup_rbs");

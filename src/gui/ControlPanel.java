@@ -122,7 +122,14 @@ public class ControlPanel extends AnchorPane {
 
         ToggleGroup toggleGMetrics = new ToggleGroup();
         toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
-        this.rbManhattan.setSelected(true); // Initial metric
+        if(useHeuristics) {
+            rbManhattan.setSelected(true); // Initial metric
+        } else {
+            rbManhattan.setDisable(true);
+            rbEuclidean.setDisable(true);
+            rbChebyshev.setDisable(true);
+        }
+
 
     }
 
@@ -277,8 +284,9 @@ public class ControlPanel extends AnchorPane {
                 return;
             }
 
-            /* SENSITIVE PART - After this, the code will never checks input exceptions. */
-
+            System.out.println(getHeuType().toString());
+            /* SENSITIVE PART - After this, the code will never checks for input exceptions. */
+            // -------------------------------------------------------------------------------
             // Record the start time in ms.
             long startTime_Nano = System.nanoTime();
             /*Instantiate the PathFinding class. with the static graph & source,target & selected distance metric type*/
@@ -289,17 +297,16 @@ public class ControlPanel extends AnchorPane {
             long elapsedTime = elapsedTimeMS(startTime_Nano);
 
             resultText.setText(""); // Clear the existing text.
-            StringBuilder sb = new StringBuilder();
 
+            // For efficient string concatenating.
+            StringBuilder sb = new StringBuilder();
             // Sets the final G cost and the elapsed time to solve the problem
             sb.append("Elapsed Time for the algorithm: ").append(elapsedTime).append("ms").append("\n")
                     .append("Final G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
-                    .append("\n Path Through: ");
+                    .append("\n Path Through Backwards: ");
 
             for (Node n : as.getFinalPathNodes())
-                sb.append(n.getYRowNo()).append(",").append(n.getXColNo())
-                        .append("-> ");
-
+                sb.append(n.getYRowNo()).append(",").append(n.getXColNo()).append("-> ");
 
             resultText.setText(sb.toString());
             grid.drawPath(as.getFinalPathNodes());
@@ -317,7 +324,11 @@ public class ControlPanel extends AnchorPane {
 
     private PathFindingAlgorithm.Heuristic getHeuType() {
 
-        if (!useHeuristics) return PathFindingAlgorithm.Heuristic.NONE;
+        if (!useHeuristics) {
+            // Alert using exhaustive search.
+            System.out.println("Using Exhaustive Search!");
+            return PathFindingAlgorithm.Heuristic.NONE;
+        }
 
         if (rbManhattan.isSelected()) {
             return PathFindingAlgorithm.Heuristic.MANHATTAN;

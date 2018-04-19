@@ -25,9 +25,9 @@ import java.util.stream.IntStream;
 
 public class SquaredGrid extends AnchorPane {
 
-    private ControlPanel controlPanelView; // control panel
-    private GridPane gridPane;
-    private ImageView actualMap;
+    private static ControlPanel controlPanelView; // control panel
+    private static GridPane gridPane;
+    private static ImageView actualMap;
 
     private Vector<Rectangle> gridBoxes;
     private Vector<Text> gridNumbers, graphWeight;
@@ -35,8 +35,8 @@ public class SquaredGrid extends AnchorPane {
 
     SquaredGrid(ControlPanel controlPanelView) {
 
-        this.controlPanelView = controlPanelView;
-        this.gridPane = new GridPane();
+        SquaredGrid.controlPanelView = controlPanelView;
+        gridPane = new GridPane();
         this.gridWidthAndHeight = 840; // Setting the width and height
         this.rowMinAndPrefHeight = 20 / 2; // Adjusting the row height
         this.colMinAndPrefWidth = 20 / 2; // Adjusting the col width
@@ -191,27 +191,27 @@ public class SquaredGrid extends AnchorPane {
     }
 
     public void viewActualMap(boolean show) {
-
-//        Platform.runLater(());
-        if (show) {
-            actualMap = new ImageView(new Image("gui/images/map.jpg"));
-            actualMap.setFitWidth(850);
-            actualMap.setFitHeight(850);
-            actualMap.setLayoutX(5);
-            actualMap.setLayoutY(5);
-            actualMap.setPickOnBounds(true);
-            actualMap.setPreserveRatio(true);
-            actualMap.setSmooth(true);
-            actualMap.setCache(true);
-            actualMap.setOpacity(0.1);
-            getChildren().remove(gridPane);
-            getChildren().add(actualMap);
-        } else {
-            if (!getChildren().contains(gridPane)) {
-                getChildren().remove(actualMap);
-                getChildren().add(gridPane);
+        Platform.runLater(() -> {
+            if (show) {
+                actualMap = new ImageView(new Image("gui/images/map.jpg"));
+                actualMap.setFitWidth(850);
+                actualMap.setFitHeight(850);
+                actualMap.setLayoutX(5);
+                actualMap.setLayoutY(5);
+                actualMap.setPickOnBounds(true);
+                actualMap.setPreserveRatio(true);
+                actualMap.setSmooth(true);
+                actualMap.setCache(true);
+                actualMap.setOpacity(0.1);
+                getChildren().remove(gridPane);
+                getChildren().add(actualMap);
+            } else {
+                if (!getChildren().contains(gridPane)) {
+                    getChildren().remove(actualMap);
+                    getChildren().add(gridPane);
+                }
             }
-        }
+        });
     }
 
     public void drawPath(List<Node> finalPath) {
@@ -220,15 +220,14 @@ public class SquaredGrid extends AnchorPane {
             p.setStroke(Color.TRANSPARENT);
             p.setFill(Color.GREEN);
             System.out.println(n.getYRowNo() + ", " + n.getXColNo());
-            this.gridPane.add(p, n.getXColNo(), n.getYRowNo());
+            gridPane.add(p, n.getXColNo(), n.getYRowNo());
         }
     }
 
-    public void colorNeighbours(int row, int col) {
-        Rectangle p = new Rectangle(20, 20);
-        p.setStroke(Color.TRANSPARENT);
-        p.setFill(Color.RED);
-        this.gridPane.add(p, col, row);
+    public static void colorCheckingNeighbours(int row, int col) {
+        Circle checked = new Circle(2, Color.VIOLET);
+        checked.setStroke(Color.TRANSPARENT);
+        gridPane.add(checked, col, row);
     }
 
     // Gets the Monochrome version of colors
