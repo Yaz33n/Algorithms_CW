@@ -14,7 +14,7 @@ import javafx.stage.StageStyle;
 public class ControlPanel extends AnchorPane {
 
     /*GUI COMPONENTS*/
-    private static Stage stageForGraph;
+    private static Stage stageForGrid;
     private static Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
     private static TextField txtSourceRow, txtSourceCol, txtTargetRow, txtTargetCol;
     private static TextArea resultText;
@@ -41,35 +41,29 @@ public class ControlPanel extends AnchorPane {
         initButtons();
         addEventHandlers();
 
-        super.setPrefSize(600, 465);
-        super.setStyle("-fx-background-color: #232323");
+        super.setId("controlPanel_AnchorPane");
         super.getChildren().addAll(lblTitle, lblSource, lblTarget, lblMetrics, txtSourceCol, txtSourceRow,
                 txtTargetCol, txtTargetRow, rbManhattan, rbChebyshev, rbEuclidean, cbShowGridNumbers,
                 cbShowGridWeight, cbShowActualMap, cbShowGridColored, spInputs, spOperations, btnReset, btnFSP,
                 lblResult, resultText);
 
-        // Creating the grid
-        grid = new SquaredGrid(this);
-
-        stageForGraph = new Stage(StageStyle.DECORATED);
-        stageForGraph.setTitle("PATH FINDING ON SQUARED GRID");
-        stageForGraph.setScene(new Scene(grid, 850, 850));
-        stageForGraph.setResizable(false);
-        stageForGraph.show();
+        grid = new SquaredGrid(this); // Creating the grid
+        stageForGrid = new Stage(StageStyle.DECORATED);
+        stageForGrid.setTitle("PATH FINDING ON SQUARED GRID");
+        stageForGrid.setScene(new Scene(grid, 850, 850));
+        stageForGrid.setResizable(false);
+        stageForGrid.show();
     }
 
     private void initLabels() {
 
         lblTitle = new Label("PATH FINDING ON SQUARED GRID"); // Creates a new label with text
-        lblTitle.setFont(new Font("Consolas Bold", 25.0)); // Setting font & size
-        lblTitle.setTextFill(Color.WHITE); // Setting label font color
+        lblTitle.setId("controlPanel_lblTitle");
         lblTitle.setLayoutX(114.0); // Sets the element in X axis
         lblTitle.setLayoutY(22.0); // Sets the element in Y axis
 
         lblSource = new Label("SOURCE DESTINATION");
-        lblSource.setPrefSize(134.0, 26.0);
-        lblSource.setFont(new Font(/*"Consolas Bold",*/ 13.0)); // Setting font size
-        lblSource.setTextFill(Color.WHITE); // Setting label font color
+        lblSource.setId("controlPanel_lblSource");
         lblSource.setLayoutX(31.0); // Sets the element in X axis
         lblSource.setLayoutY(101.0); // Sets the element in Y axis
 
@@ -121,6 +115,7 @@ public class ControlPanel extends AnchorPane {
 
         ToggleGroup toggleGMetrics = new ToggleGroup();
         toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
+
         if(useHeuristics) {
             rbManhattan.setSelected(true); // Initial metric
         } else {
@@ -168,26 +163,22 @@ public class ControlPanel extends AnchorPane {
     private void initCheckBoxes() {
 
         cbShowGridNumbers = new CheckBox("Show Grid Numbers");
-        cbShowGridNumbers.setFont(new Font(12));
-        cbShowGridNumbers.setTextFill(Color.WHITE);
+        cbShowGridNumbers.setId("controlPanel_cbEFs");
         cbShowGridNumbers.setLayoutX(33.0);
         cbShowGridNumbers.setLayoutY(213.0);
 
         cbShowGridWeight = new CheckBox("Show Graph Weights");
-        cbShowGridWeight.setFont(new Font(12));
-        cbShowGridWeight.setTextFill(Color.WHITE);
+        cbShowGridWeight.setId("controlPanel_cbEFs");
         cbShowGridWeight.setLayoutX(171.0);
         cbShowGridWeight.setLayoutY(213.0);
 
         cbShowActualMap = new CheckBox("Show Actual Map");
-        cbShowActualMap.setFont(new Font(12));
-        cbShowActualMap.setTextFill(Color.WHITE);
+        cbShowActualMap.setId("controlPanel_cbEFs");
         cbShowActualMap.setLayoutX(318.0);
         cbShowActualMap.setLayoutY(213.0);
 
         cbShowGridColored = new CheckBox("Show Colored Grid");
-        cbShowGridColored.setFont(new Font(12));
-        cbShowGridColored.setTextFill(Color.WHITE);
+        cbShowGridColored.setId("controlPanel_cbEFs");
         cbShowGridColored.setLayoutX(443.0);
         cbShowGridColored.setLayoutY(213.0);
 
@@ -210,16 +201,14 @@ public class ControlPanel extends AnchorPane {
     private void initButtons() {
 
         btnReset = new Button("RESET");
-        btnReset.setId("btnReset");
+        btnReset.setId("controlPanel_btnReset");
         btnReset.setLayoutX(509.0);
         btnReset.setLayoutY(56.0);
 
         btnFSP = new Button("FIND SHORTEST PATH");
-        btnFSP.setFont(new Font("System Bold", 18.0));
-        btnFSP.setTextFill(Color.DARKGRAY);
+        btnFSP.setId("controlPanel_btnFSP");
         btnFSP.setLayoutX(176.0);
         btnFSP.setLayoutY(258.0);
-        btnFSP.setPrefSize(246.0, 42.0);
     }
 
     private void addEventHandlers() {
@@ -258,14 +247,15 @@ public class ControlPanel extends AnchorPane {
 
         btnFSP.setOnAction(e -> {
 
+            btnFSP.setDisable(true); // Avoid clicking multiple times
+
             /*
-             * This method will initiate the PathFindingAlgorithm Class.
              * The User will choose whether use heuristics or use the exhaustive search.
              * The user will choose the graph zoom level(Doubling hypothesis value)
              */
 
             // Clear the existing path or use different colors to each path.
-            int sY = -1, sX = -1, tY = -1, tX = -1;
+            int sY = -1, sX = -1, tY = -1, tX = -1; // Need to assign -1
 
             try {
                 sY = Integer.parseInt(txtSourceRow.getText());
@@ -273,42 +263,43 @@ public class ControlPanel extends AnchorPane {
                 tY = Integer.parseInt(txtTargetRow.getText());
                 tX = Integer.parseInt(txtTargetCol.getText());
             } catch (NumberFormatException exception) {
-                // show alert
+                Utils.alertWarning("The Coordinates either out of Range or Invalid Characters.");
                 return;
             }
 
             if (sY + sX + tY + tX == -4) {
-                // show alert
+                Utils.alertWarning("Please Select Source(X,Y) and Target(X,Y) to Run the Algorithm.");
+                return;
+            } else if (sY + sX + tY + tX == 0) {
+                Utils.alertInfo("Oops, you're in the same node as the Source node!");
                 return;
             }
 
-            System.out.println(getHeuType().toString());
-            /* SENSITIVE PART - After this, the code will never checks for input exceptions. */
-            // -------------------------------------------------------------------------------
             // Record the start time in ms.
-            long startTime_Nano = Utils.nanoTimeStamp();
+            final long startTime_Nano = Utils.nanoTimeStamp();
             /*Instantiate the PathFinding class. with the static graph & source,target & selected distance metric type*/
             PathFindingAlgorithm as = new PathFindingAlgorithm(Main.graph, sY, sX, tY, tX, getHeuType());
             /*Find the shortest path.*/
             as.findShortestPath();
             /* Record the elapsed time in milliseconds. */
-            long elapsedTime = Utils.elapsedTimeMS(startTime_Nano);
-
-            resultText.setText(""); // Clear the existing text.
+            final long elapsedTime = Utils.elapsedTimeMS(startTime_Nano);
 
             // For efficient string concatenating.
             StringBuilder sb = new StringBuilder();
             // Sets the final G cost and the elapsed time to solve the problem
-            sb.append("Elapsed Time for the algorithm: ").append(elapsedTime).append("ms").append("\n")
+            sb.append("Elapsed Time: ").append(elapsedTime).append("ms\n")
                     .append("Final G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
-                    .append("\n Path Through Backwards: ");
+                    .append("\nExhaustive Search: ").append(!useHeuristics)
+                    .append("\nPath Through Backwards: ");
 
-            for (Node n : as.getFinalPathNodes())
-                sb.append(n.getYRowNo()).append(",").append(n.getXColNo()).append("-> ");
-            
-            resultText.setText(sb.toString());
+            for (Node n : as.getFinalPathNodes()) // Get reconstructed path list and show
+                sb.append("-> ").append(n.getYRowNo()).append(",").append(n.getXColNo());
+
+            resultText.setText(""); // Clear the existing text.
+            resultText.setText(sb.toString()); // Set the new run results.
             grid.drawPath(as.getFinalPathNodes());
 
+            btnFSP.setDisable(false); // Re-Enable the button
         });
     }
 
@@ -317,8 +308,7 @@ public class ControlPanel extends AnchorPane {
     private PathFindingAlgorithm.Heuristic getHeuType() {
 
         if (!useHeuristics) {
-            // Alert using exhaustive search.
-            System.out.println("Using Exhaustive Search!");
+            Utils.alertInfo("Algorithm used exhaustive search for T without h(n).");
             return PathFindingAlgorithm.Heuristic.NONE;
         }
 
@@ -329,7 +319,6 @@ public class ControlPanel extends AnchorPane {
         } else {
             return PathFindingAlgorithm.Heuristic.CHEBYSHEV;
         }
-
     }
 
     public TextField getTxtSourceCol() {
@@ -357,7 +346,7 @@ public class ControlPanel extends AnchorPane {
     }
 
     public Stage getStageForGraph() {
-        return stageForGraph;
+        return stageForGrid;
     }
 
 }

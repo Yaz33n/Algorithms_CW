@@ -17,7 +17,8 @@
     -fx-pref-height: 18.0;
     -fx-pref-width: 345.0;
     -fx-font-size: 14.0;
-    -fx-font-family: System Bold;
+    -fx-font-family: System;
+    -fx-font-weight: Bold;
     -fx-text-fill: white;
 }
 
@@ -36,7 +37,28 @@
     -fx-text-fill: white;
 }
 
-#btnReset {
+#controlPanel_AnchorPane {
+    -fx-pref-width: 600;
+    -fx-pref-height: 470;
+    -fx-background-color: #232323;
+}
+
+#controlPanel_lblTitle {
+    -fx-font-family: Consolas;
+    -fx-font-weight: Bold;
+    -fx-font-size: 25;
+    -fx-text-fill: white;
+}
+
+#controlPanel_lblSource {
+    -fx-pref-width: 135;
+    -fx-pref-height: 26;
+    /*-fx-font-family: Consolas Bold;*/
+    -fx-font-size: 13;
+    -fx-text-fill: white;
+}
+
+#controlPanel_btnReset {
     -fx-font-family: "System";
     -fx-font-size: 11.0;
     -fx-text-fill: white;
@@ -46,9 +68,28 @@
     -fx-background-color: red;
 }
 
-#btnReset:hover {
+#controlPanel_btnReset:hover {
     -fx-text-fill: white;
-    -fx-background-color: deeppink;
+    -fx-background-color: #995400;
+}
+
+#controlPanel_btnFSP {
+    -fx-font-family: System;
+    -fx-font-size: 18;
+    -fx-text-fill: #000000;
+    -fx-background-color: green;
+    -fx-pref-width: 245;
+    -fx-pref-height: 42;
+    -fx-font-weight: Bolder;
+}
+
+#controlPanel_cbEFs {
+    -fx-font-size: 12;
+    -fx-text-fill: white;
+}
+
+#controlPanel_cbEFs:hover {
+    -fx-font-size: 12.2;
 }
 
 #sGAnchorPane {

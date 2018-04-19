@@ -27,18 +27,16 @@ public class Main extends Application {
         this.primaryStage = primaryStage; // Sets the primary stage.
         initComponents(); // Initialize the components
         Scene scene = new Scene(optionsGridPane); // Add the startup selection option menu
-
-        // Adding the stylesheet for styling
-        scene.getStylesheets().add("gui/css/main.css");
-        this.primaryStage.setTitle("Options");
+        scene.getStylesheets().add("gui/css/main.css"); // Adding the stylesheet for styling
+        this.primaryStage.setTitle("Options"); // Setting title
         this.primaryStage.setScene(scene); // Sets the scene
-        this.primaryStage.show();
+        this.primaryStage.show(); // Present the window to the user
     }
 
     private void initComponents() {
 
-        this.optionsGridPane = new GridPane();
-        optionsGridPane.setId("startup_optionsGridPane");
+        this.optionsGridPane = new GridPane(); // GridPane for add all the child nodes.
+        optionsGridPane.setId("startup_optionsGridPane"); // Id for styling and sizing
 
         // Adding the rows first
         for (int y = 0; y < 3; y++) {
@@ -75,7 +73,7 @@ public class Main extends Application {
             this.primaryStage.setOnCloseRequest(e1 -> controlPanel.getStageForGraph().close());
         });
 
-        Label helperTitle = new Label("Select the grid size and toggle the heuristics");
+        Label helperTitle = new Label("Select the grid size and on/off Heuristics");
         helperTitle.setId("startup_HelperText");
         GridPane.setMargin(helperTitle, new Insets(0, 10, 0, 10));
         this.optionsGridPane.add(helperTitle, 0, 0, 6, 1);
@@ -87,7 +85,7 @@ public class Main extends Application {
         this.optionsGridPane.add(toggleHeuristics, 1, 2, 4, 1);
         toggleHeuristics.setOnAction(e -> {
             this.useHeuristics = !useHeuristics;
-            System.out.println(useHeuristics);
+//            System.out.println(useHeuristics);
         });
 
         RadioButton rb20x20 = new RadioButton("20x20");
@@ -140,7 +138,7 @@ public class Main extends Application {
             {1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 0, 0, 0, 0, 0, 0, 0, 0, 0}
     };
 
-    // still processing in the main thread
+    /* Util Class for ZoomIn and ZoomOut the given map */
     private final class DoublingHypothesis {
 
         private int[][] arrayToZoom;

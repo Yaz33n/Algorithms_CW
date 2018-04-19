@@ -9,14 +9,14 @@ public class Utils {
 
     public static void alertWarning(String m) {
         Alert alert = new Alert(Alert.AlertType.WARNING);
-        alert.setHeaderText("Warning Message");
+        alert.setHeaderText("Warning Message | Inputs Error");
         alert.setContentText(m);
         alert.show();
     }
 
     public static void alertInfo(String m) {
         Alert alert = new Alert(Alert.AlertType.INFORMATION);
-        alert.setHeaderText("Info Message");
+        alert.setHeaderText("Runtime Information | Searching");
         alert.setContentText(m);
         alert.show();
     }

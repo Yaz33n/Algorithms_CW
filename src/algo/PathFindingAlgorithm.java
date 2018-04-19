@@ -36,7 +36,7 @@ public class PathFindingAlgorithm {
         this.targetXColPos = tXPos;
         this.selectedMetric = sMetric;
 
-        // Sorted by Ascending order of fCost
+        // Sorted by Ascending order of fCost < , > , ==
         openSet = new PriorityQueue<>(Comparator.comparingDouble(Node::getFCost));
         closedSet = new HashSet<>();
         finalPathNodes = new ArrayList<>();
