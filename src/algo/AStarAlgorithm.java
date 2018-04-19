@@ -96,7 +96,7 @@ public class AStarAlgorithm {
         /*While openSet is not empty we can keep going*/
         while (!openSet.isEmpty()) {
 
-            currentNode = openSet.poll(); // Retrieves and removes the head of this node.
+            currentNode = openSet.poll(); // Retrieves and removes the head of this set.
 
             /*Checks whether the current looking node is the destination/target node*/
             if (currentNode.equals(endNode) || currentNode.getHCost() == 0) {
