@@ -97,7 +97,6 @@ public class AStarAlgorithm {
         while (!openSet.isEmpty()) {
 
             currentNode = openSet.poll(); // Retrieves and removes the head of this set.
-
             /*Checks whether the current looking node is the destination/target node*/
             if (currentNode.equals(endNode) || currentNode.getHCost() == 0) {
                 // System.out.println("Reached To The End"); // For Debug Purposes
@@ -109,25 +108,19 @@ public class AStarAlgorithm {
             for (Node neighbour : currentNode.getNeighbours()) {
 
                 if (closedSet.contains(neighbour)) continue; // No need to check this.
-
                 if (!neighbour.isVisited() && !neighbour.isBlocked()) {
                     // Update the GCost when moving.
                     /*Get the CurrentNodeGCost and and add the Next Node Weight as the Distance*/
                     final double tentativeGScore = currentNode.getGCost() + neighbour.getNodeWeight();
                     /*The new F cost will be the past nodes' GScore + the neighbours distance from the target*/
-                    final double newFCost = neighbour.getGCost() + neighbour.getHCost();
+                    final double newFCost = tentativeGScore + neighbour.getHCost();
 
-                    if (!openSet.contains(neighbour)) {
-                        // System.out.println("NEI IS NOT IN OPEN SET " + neighbour.getYRowNo() + "," + neighbour.getXColNo());
-                        openSet.add(neighbour); // Discovers a new node
-                        grid.colorNeighbours(neighbour.getYRowNo(), neighbour.getXColNo());
-                    } else if (tentativeGScore >= neighbour.getGCost()) {
-                        continue; // Bad Move skip this
+                    if (newFCost < neighbour.getFCost()) {
+                        neighbour.setParent(currentNode);
+                        neighbour.setGCost(tentativeGScore);
+                        neighbour.setFCost(newFCost);
+                        openSet.add(neighbour);
                     }
-
-                    neighbour.setParent(currentNode);
-                    neighbour.setGCost(tentativeGScore);
-                    neighbour.setFCost(newFCost);
                 }
             }
 

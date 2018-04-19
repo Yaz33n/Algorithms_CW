@@ -25,6 +25,7 @@ public class Node {
         this.yRowNo = yRowNo;
         this.xColNo = xColNo;
         this.blocked = blocked;
+        this.gCost = Integer.MAX_VALUE;
         this.neighbours = new ArrayList<>();
     }
 

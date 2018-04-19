@@ -12,3 +12,9 @@
     -fx-text-fill: white;
     -fx-background-color: deeppink;
 }
+
+#sGAnchorPane {
+    -fx-pref-width: 800;
+    -fx-pref-height: 800;
+    -fx-background-color: red;
+}

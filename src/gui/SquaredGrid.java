@@ -39,10 +39,10 @@ public class SquaredGrid extends AnchorPane {
         this.graph = new DoublingHypothesis(graph, hypo).getMap();
         Main.graph = this.graph;
 
-        this.gridWidthAndHeight = 800.0; // Setting the width and height
+        this.gridWidthAndHeight = 850; // Setting the width and height
         this.rowMinAndPrefHeight = 30 / hypo; // Adjusting the row height
         this.colMinAndPrefWidth = 30 / hypo; // Adjusting the col width
-        this.recDimensions = 40 / hypo; // Adjusting the rectangle dimensions
+        this.recDimensions = 50 / hypo; // Adjusting the rectangle dimensions
 
         initLayoutComponents();
     }
@@ -50,8 +50,10 @@ public class SquaredGrid extends AnchorPane {
     private void initLayoutComponents() {
 
         // Setting up the main anchor pane
-        setPrefSize(gridWidthAndHeight, gridWidthAndHeight);
-        setStyle("-fx-background-color: #232323");
+//        setPrefSize(gridWidthAndHeight, gridWidthAndHeight);
+//        setStyle("-fx-background-color: #232323");
+
+//        this.setId("sGAnchorPane");
 
         // Initializing the inner gridPane
         gridPane.setLayoutX(5);

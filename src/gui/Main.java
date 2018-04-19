@@ -1,14 +1,12 @@
 package gui;
 
-import algo.AStarAlgorithm;
-import algo.Node;
 import javafx.application.Application;
 import javafx.scene.Scene;
 import javafx.stage.Stage;
 
 public class Main extends Application {
 
-    //    @Override
+    @Override
     public void start(Stage primaryStage) {
         // Creates a new control panel
         ControlPanel controlPanel = new ControlPanel();

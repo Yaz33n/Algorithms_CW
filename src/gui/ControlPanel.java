@@ -49,7 +49,7 @@ public class ControlPanel extends AnchorPane {
 
         stageForGraph = new Stage(StageStyle.DECORATED);
         stageForGraph.setTitle("PATH FINDING ON SQUARED GRID");
-        stageForGraph.setScene(new Scene(this.grid, 800, 800));
+        stageForGraph.setScene(new Scene(this.grid, 850, 850));
         stageForGraph.setResizable(false);
         stageForGraph.show();
 
@@ -90,7 +90,6 @@ public class ControlPanel extends AnchorPane {
         this.lblResult.setTextFill(Color.WHITE); // Setting label font color
         this.lblResult.setLayoutX(30.0); // Sets the element in X axis
         this.lblResult.setLayoutY(331.0); // Sets the element in Y axis
-
 
     }
 
@@ -275,11 +274,10 @@ public class ControlPanel extends AnchorPane {
             resultText.setText("Elapsed Time: " + elapsedTime + "ms" + "\n"
                     + "Final G Cost: " + as.getMatrix()[tY][tX].getGCost());
 
-
             for(Node nei: as.getFinalPathNodes()) {
                 System.out.println("F NODE" + nei.getYRowNo() + ", " + nei.getXColNo());
             }
-//            grid.drawPath(as.getFinalPathNodes());
+            grid.drawPath(as.getFinalPathNodes());
 
         });
 
