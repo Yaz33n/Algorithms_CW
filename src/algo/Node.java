@@ -25,7 +25,7 @@ public class Node {
         this.yRowNo = yRowNo;
         this.xColNo = xColNo;
         this.blocked = blocked;
-        this.gCost = Integer.MAX_VALUE;
+        this.gCost = Integer.MAX_VALUE; // Initially its infinite. in my case its Integer.MAX_VALUE
         this.neighbours = new ArrayList<>();
     }
 

@@ -21,7 +21,7 @@ public class Utils {
         alert.show();
     }
 
-    public static long nanoTimeStamp() {
+    public static long currentMilliseconds() {
         return System.currentTimeMillis();
     }
 
@@ -29,6 +29,7 @@ public class Utils {
         return (System.currentTimeMillis() - start);
     }
 
+    @SuppressWarnings("unused")
     public static double elapsedTimeSC(final long start) {
         return (System.currentTimeMillis() - start) / SECONDS;
     }

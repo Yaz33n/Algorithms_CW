@@ -52,6 +52,8 @@ public class ControlPanel extends AnchorPane {
         stageForGrid.setResizable(false);
         stageForGrid.setOnCloseRequest(e -> ((Stage) getScene().getWindow()).close());
         stageForGrid.show();
+
+        resetEverything(); // Apply defaults
     }
 
     private void initLabels() {
@@ -138,8 +140,7 @@ public class ControlPanel extends AnchorPane {
         txtTargetCol.setLayoutY(100.0);
         txtTargetCol.setPrefSize(47.0, 28.0);
 
-        resultText = new TextArea("Click Left Mouse Button for entering \nSource Node/Destination &" +
-                " Click Right Mouse Button for \nentering the Target Destination Node.");
+        resultText = new TextArea();
         resultText.setPrefSize(538.0, 74.0);
         resultText.setEditable(false);
         resultText.setLayoutX(30.0);
@@ -213,29 +214,7 @@ public class ControlPanel extends AnchorPane {
         cbShowActualMap.setOnAction(e -> grid.viewActualMap(cbShowActualMap.isSelected()));
 
         /* Resets all the changes made to the UI */
-        btnReset.setOnAction(e -> {
-
-            cbShowGridWeight.setSelected(false);
-            cbShowGridColored.setSelected(false);
-            cbShowGridNumbers.setSelected(false);
-            cbShowActualMap.setSelected(false);
-
-            grid.viewNodeWeights(false);
-            grid.viewGridNumbers(false);
-            grid.viewActualMap(false);
-            grid.viewColoredGrid(false);
-
-            txtSourceCol.setText("");
-            txtSourceRow.setText("");
-            txtTargetCol.setText("");
-            txtTargetRow.setText("");
-
-            resultText.setText("");
-
-            SquaredGrid.removeLastDrawnPath();
-            SquaredGrid.removeLastCheckedNeighbours();
-            SquaredGrid.removeSandTDestinations();
-        });
+        btnReset.setOnAction(e -> resetEverything());
 
         btnFSP.setOnAction(e -> {
             btnFSP.setDisable(true); // Avoid clicking multiple times
@@ -244,6 +223,31 @@ public class ControlPanel extends AnchorPane {
             findPath();
             btnFSP.setDisable(false); // Re-Enable the button
         });
+    }
+
+    private void resetEverything() {
+
+        cbShowGridWeight.setSelected(false);
+        cbShowGridColored.setSelected(false);
+        cbShowGridNumbers.setSelected(false);
+        cbShowActualMap.setSelected(false);
+
+        grid.viewNodeWeights(false);
+        grid.viewGridNumbers(false);
+        grid.viewActualMap(false);
+        grid.viewColoredGrid(false);
+
+        txtSourceCol.setText("");
+        txtSourceRow.setText("");
+        txtTargetCol.setText("");
+        txtTargetRow.setText("");
+
+        resultText.setText("Click Left Mouse Button for entering \nSource Node/Destination &" +
+                " Click Right Mouse Button for \nentering the Target Destination Node.");
+
+        SquaredGrid.removeLastDrawnPath();
+        SquaredGrid.removeLastCheckedNeighbours();
+        SquaredGrid.removeSandTDestinations();
     }
 
     private void findPath() {
@@ -277,13 +281,13 @@ public class ControlPanel extends AnchorPane {
         }
 
         // Record the start time in ms.
-        final long startTime_Nano = Utils.nanoTimeStamp();
+        final long startTime_MS = Utils.currentMilliseconds();
         /*Instantiate the PathFinding class. with the static graph & source,target & selected distance metric type*/
         PathFindingAlgorithm as = new PathFindingAlgorithm(Main.graph, sY, sX, tY, tX, getHeuType());
         /*Find the shortest path.*/
         as.findShortestPath();
         /* Record the elapsed time in milliseconds. */
-        final double elapsedTimeMS = Utils.elapsedTimeMS(startTime_Nano);
+        final double elapsedTimeMS = Utils.elapsedTimeMS(startTime_MS);
 
         // For efficient string concatenating.
         StringBuilder sb = new StringBuilder();
