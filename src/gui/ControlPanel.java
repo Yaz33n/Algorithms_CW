@@ -152,7 +152,8 @@ public class ControlPanel extends AnchorPane {
         txtTargetCol.setLayoutY(100.0);
         txtTargetCol.setPrefSize(47.0, 28.0);
 
-        resultText = new TextArea("No Results Yet!");
+        resultText = new TextArea("Click Left Mouse Button for entering \nSource Node/Destination &" +
+                " Click Right Mouse Button for \nentering the Target Destination Node.");
         resultText.setPrefSize(538.0, 74.0);
         resultText.setEditable(false);
         resultText.setLayoutX(30.0);
@@ -259,7 +260,7 @@ public class ControlPanel extends AnchorPane {
 
         /*The User will choose whether use heuristics or use the exhaustive search.*/
         /*The user will choose the graph zoom level(Doubling hypothesis value)*/
-        /*Clear the existing path or use different colors to each path. TODO */
+        /*Clear the existing path or use different colors to each path. TODO*/
 
         int sY, sX, tY, tX;
 
@@ -291,8 +292,8 @@ public class ControlPanel extends AnchorPane {
         // For efficient string concatenating.
         StringBuilder sb = new StringBuilder();
         // Sets the final G cost and the elapsed time to solve the problem
-        sb.append("Elapsed Time: ").append(elapsedTime).append("ms\n")
-                .append("Final G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
+        sb.append("Elapsed Time: ").append(elapsedTime).append("ms")
+                .append("\nFinal G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
                 .append("\nExhaustive Search: ").append(!useHeuristics)
                 .append("\nPath Through Backwards: ");
 

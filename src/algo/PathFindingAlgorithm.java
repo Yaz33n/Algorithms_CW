@@ -52,7 +52,7 @@ public class PathFindingAlgorithm {
 
         for (int y = 0; y < graph.length; y++) { /*Traverse Rows*/
             for (int x = 0; x < graph[y].length; x++) { /*Traverse Each column in Row*/
-                // Creates a new node with x, y coordinates and the blocked status.
+                // Creates a new node with y(Row), x(Col) coordinates and the blocked status.
                 Node node = new Node(y, x, graph[y][x] == 0);
                 // Set the heuristic value from this node to the end node.
                 node.setHCost(getHeuristicVal(node, selectedMetric));
@@ -115,7 +115,7 @@ public class PathFindingAlgorithm {
                         neighbour.setParent(currentNode); // Sets came from as the currentNode
                         neighbour.setGCost(tentativeGScore); // Set the temp G value to the new neighbour.
                         neighbour.setFCost(newFCost); // Set the new F Cost to the new neighbour.
-                        openSet.add(neighbour); // Now if this is the best we need to check this next
+                        openSet.add(neighbour); // Now this is the best we found. Need to check this next
                     }
                 }
             }

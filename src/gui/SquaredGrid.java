@@ -22,7 +22,7 @@ import java.util.Vector;
 
 public class SquaredGrid extends AnchorPane {
 
-    /*Declaring the gridPane size for all screens 840 * 840 (PX)*/
+    /*Declaring the gridPane size for all screens 880 * 880 (PX)*/
     private static final double gridWidthNHeight = 880d;
     /*Adjusting the row min and pref height*/
     private static final double rowMinAndPrefHeight = gridWidthNHeight / Main.graph.length;
@@ -50,10 +50,11 @@ public class SquaredGrid extends AnchorPane {
 
         // Setting up the main anchor pane
         setPrefSize(gridWidthNHeight, gridWidthNHeight);
+        // Changing the background color
         setStyle("-fx-background-color: #232323");
 
-        gridPane.setLayoutX(10);
-        gridPane.setLayoutY(10);
+        gridPane.setLayoutX(10); // X position
+        gridPane.setLayoutY(10); // Y position
         gridPane.setAlignment(Pos.CENTER);
         gridPane.setGridLinesVisible(true);
         gridPane.setPrefSize(gridWidthNHeight, gridWidthNHeight);
@@ -77,16 +78,19 @@ public class SquaredGrid extends AnchorPane {
         }
 
         // This is for reference add/remove elements.
-        gridBoxes = new Vector<>();
-        gridNumbers = new Vector<>();
-        graphWeight = new Vector<>();
-        lastDrawnPath = new Vector<>();
-        lastCheckedNeighbours = new Vector<>();
+        gridBoxes = new Vector<>(); // To keep track of the colored rectangles.
+        gridNumbers = new Vector<>(); // To keep track of the grid coordinates text node.
+        graphWeight = new Vector<>(); // To keep track of the grid weight text node.
 
+        lastDrawnPath = new Vector<>(); // Keep track of the last drawnPath nodes
+        lastCheckedNeighbours = new Vector<>(); // Keep track of the last checkedNeighbours nodes
+
+        /*For indicate the clicked source node*/
         startPosRec = new Rectangle(recDimensions / 2, recDimensions / 2);
         startPosRec.setStroke(Color.TRANSPARENT);
         startPosRec.setFill(Color.LIGHTGREEN);
 
+        /*For indicate the clicked target node*/
         targetPosRec = new Rectangle(recDimensions / 2, recDimensions / 2);
         targetPosRec.setStroke(Color.TRANSPARENT);
         targetPosRec.setFill(Color.DARKRED);
@@ -122,7 +126,7 @@ public class SquaredGrid extends AnchorPane {
                                 controlPanelView.getTxtSourceCol().setText(String.valueOf(col));
                                 gridPane.add(startPosRec, col, row);
                             } else {
-                                Utils.alertWarning("Source Node blocked!");
+                                Utils.alertWarning("Source Node blocked! Please click a open node.");
                             }
                         } else if (e.getButton() == MouseButton.SECONDARY) {
                             if (Main.graph[row][col] != 0) { // Checking if the node is blocked
@@ -131,7 +135,7 @@ public class SquaredGrid extends AnchorPane {
                                 controlPanelView.getTxtTargetCol().setText(String.valueOf(col));
                                 gridPane.add(targetPosRec, col, row);
                             } else {
-                                Utils.alertWarning("Target Node blocked!");
+                                Utils.alertWarning("Target Node blocked! Please click a open node.");
                             }
                         }
                     });
@@ -196,10 +200,10 @@ public class SquaredGrid extends AnchorPane {
         Platform.runLater(() -> {
             if (show) {
                 actualMap = new ImageView(new Image("gui/images/map.jpg"));
-                actualMap.setFitWidth(850);
-                actualMap.setFitHeight(850);
-                actualMap.setLayoutX(5);
-                actualMap.setLayoutY(5);
+                actualMap.setFitWidth(880);
+                actualMap.setFitHeight(880);
+                actualMap.setLayoutX(10);
+                actualMap.setLayoutY(10);
                 actualMap.setPickOnBounds(true);
                 actualMap.setPreserveRatio(true);
                 actualMap.setSmooth(true);
@@ -218,7 +222,7 @@ public class SquaredGrid extends AnchorPane {
 
     public static void drawPath(List<Node> finalPath) {
         for (Node n : finalPath) {
-            Rectangle p = new Rectangle(recDimensions / 2, recDimensions / 2);
+            Rectangle p = new Rectangle(recDimensions / 1.7, recDimensions / 1.7);
             p.setStroke(Color.TRANSPARENT);
             p.setFill(Color.GREEN);
             lastDrawnPath.add(p);

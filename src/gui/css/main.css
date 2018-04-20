@@ -9,6 +9,7 @@
     -fx-pref-width: 395px;
     -fx-background-color: #009800;
     -fx-text-fill: black;
+    -fx-font-weight: Bold;
 }
 
 #startup_HelperText {
@@ -16,7 +17,7 @@
     -fx-content-display: center;
     -fx-pref-height: 18.0;
     -fx-pref-width: 345.0;
-    -fx-font-size: 14.0;
+    -fx-font-size: 15.0;
     -fx-font-family: System;
     -fx-font-weight: Bold;
     -fx-text-fill: white;
@@ -81,6 +82,21 @@
     -fx-pref-width: 245;
     -fx-pref-height: 42;
     -fx-font-weight: Bolder;
+}
+
+#controlPanel_btnFSP {
+    -fx-font-family: System;
+    -fx-font-size: 18;
+    -fx-text-fill: #000000;
+    -fx-background-color: green;
+    -fx-pref-width: 245;
+    -fx-pref-height: 42;
+    -fx-font-weight: Bolder;
+}
+
+#controlPanel_btnFSP:hover {
+    -fx-scale-y: 1.1;
+    -fx-scale-x: 1.1;
 }
 
 #controlPanel_cbEFs {

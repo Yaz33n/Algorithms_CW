@@ -29,6 +29,7 @@ public class Main extends Application {
         Scene scene = new Scene(optionsGridPane); // Add the startup selection option menu
         scene.getStylesheets().add("gui/css/main.css"); // Adding the stylesheet for styling
         this.primaryStage.setTitle("Options"); // Setting title
+        this.primaryStage.setResizable(false); // Restrict from resizing the window
         this.primaryStage.setScene(scene); // Sets the scene
         this.primaryStage.show(); // Present the window to the user
     }
@@ -83,10 +84,7 @@ public class Main extends Application {
         toggleHeuristics.setId("startup_cbToggleHeuristics");
         GridPane.setMargin(toggleHeuristics, new Insets(10, 10, 10, 10));
         this.optionsGridPane.add(toggleHeuristics, 1, 2, 4, 1);
-        toggleHeuristics.setOnAction(e -> {
-            this.useHeuristics = !useHeuristics;
-//            System.out.println(useHeuristics);
-        });
+        toggleHeuristics.setOnAction(e -> this.useHeuristics = !useHeuristics);
 
         RadioButton rb20x20 = new RadioButton("20x20");
         rb20x20.setId("startup_rbs");
