@@ -17,7 +17,7 @@ public class PathFindingAlgorithm {
     private Node[][] matrix; // Node Matrix to hold all the node objects.
 
     private PriorityQueue<Node> openSet; // OpenSet contains all the node that need to be evaluated.
-    private Set<Node> closedSet; // Closed Set stores all the evaluated nodes. // TODO REMOVE
+    private Set<Node> closedSet; // Closed Set stores all the evaluated nodes. // TODO REMOVE LATER
     private List<Node> finalPathNodes; // Stores the final backtracked path.
 
     /**
@@ -64,7 +64,6 @@ public class PathFindingAlgorithm {
     }
 
     private void addNeighbours() {
-
         for (Node[] r /*Each Row*/: matrix) {
             for (Node n /*Each node in row (current col)*/: r) {
                 /*Cycle through each direction*/
@@ -171,7 +170,7 @@ public class PathFindingAlgorithm {
             return 0.0;
         }
 
-        return 0.0; // Zero H TODO RESOLVE
+        return 0.0; // Zero H TODO RESOLVE H COST
     }
 
     /*Return the final constructed path (from Backward) if no path size() == 0*/
