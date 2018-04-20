@@ -264,7 +264,7 @@ public class ControlPanel extends AnchorPane {
             tY = Integer.parseInt(txtTargetRow.getText());
             tX = Integer.parseInt(txtTargetCol.getText());
 
-            if ((sY + sX) - (tY + tX) == 0) {
+            if (sY == tY && sX == tX) {
                 Utils.alertInfo("Oops, you're in the same node as the Source node!");
                 return;
             } else if (sY >= len || sY < 0 || sX >= len || sX < 0) {
