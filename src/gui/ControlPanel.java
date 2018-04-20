@@ -245,6 +245,10 @@ public class ControlPanel extends AnchorPane {
             txtTargetRow.setText("");
 
             resultText.setText("");
+
+            SquaredGrid.removeLastDrawnPath();
+            SquaredGrid.removeLastCheckedNeighbours();
+            SquaredGrid.removeSandTDestinations();
         });
 
         btnFSP.setOnAction(e -> {

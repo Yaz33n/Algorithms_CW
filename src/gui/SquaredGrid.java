@@ -245,6 +245,9 @@ public class SquaredGrid extends AnchorPane {
         gridPane.getChildren().removeAll(lastCheckedNeighbours);
     }
 
+    public static void removeSandTDestinations() {
+        gridPane.getChildren().removeAll(startPosRec, targetPosRec);
+    }
     // Gets the Monochrome version of colors
     private Paint getGreyScaleColor(int weight) {
         switch (weight) {
