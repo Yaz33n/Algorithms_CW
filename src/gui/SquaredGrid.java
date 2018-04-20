@@ -5,7 +5,6 @@ import javafx.application.Platform;
 import javafx.geometry.HPos;
 import javafx.geometry.Pos;
 import javafx.geometry.VPos;
-import javafx.scene.control.Alert;
 import javafx.scene.image.Image;
 import javafx.scene.image.ImageView;
 import javafx.scene.input.MouseButton;
@@ -48,15 +47,13 @@ public class SquaredGrid extends AnchorPane {
 
     private void initLayoutComponents() {
 
-        // Setting up the main anchor pane
-        setPrefSize(gridWidthNHeight, gridWidthNHeight);
-        // Changing the background color
-        setStyle("-fx-background-color: #232323");
+        setPrefSize(gridWidthNHeight, gridWidthNHeight); // Setting up the main anchor pane
+        setStyle("-fx-background-color: #232323"); // Changing the background color
 
         gridPane.setLayoutX(10); // X position
         gridPane.setLayoutY(10); // Y position
         gridPane.setAlignment(Pos.CENTER);
-        gridPane.setGridLinesVisible(true);
+        // gridPane.setGridLinesVisible(true);
         gridPane.setPrefSize(gridWidthNHeight, gridWidthNHeight);
 
         for (int[] ignored /* Element Ignored */ : Main.graph) {
@@ -95,15 +92,27 @@ public class SquaredGrid extends AnchorPane {
         targetPosRec.setStroke(Color.TRANSPARENT);
         targetPosRec.setFill(Color.DARKRED);
 
+        initImage();
         addGridBoxes(); // Adding the rectangles in to each box
-        getChildren().add(gridPane); // setting the gridPane inside to the anchorPane
+        getChildren().addAll(actualMap, gridPane); // setting the gridPane inside to the anchorPane
+    }
+
+    private void initImage() {
+        actualMap = new ImageView(new Image("gui/images/map.jpg"));
+        actualMap.setFitWidth(880);
+        actualMap.setFitHeight(880);
+        actualMap.setLayoutX(10);
+        actualMap.setLayoutY(10);
+        actualMap.setPickOnBounds(true);
+        actualMap.setPreserveRatio(true);
+        actualMap.setSmooth(true);
+        actualMap.setCache(true);
     }
 
     private void addGridBoxes() {
         Platform.runLater(() -> {
             for (int r = 0; r < Main.graph.length; r++) {
                 for (int c = 0; c < Main.graph[r].length; c++) {
-
                     final Rectangle rec = new Rectangle(recDimensions, recDimensions);
                     final int row = r, col = c;
                     rec.setArcHeight(5);
@@ -111,14 +120,17 @@ public class SquaredGrid extends AnchorPane {
                     rec.setStrokeType(StrokeType.OUTSIDE);
                     rec.setStroke(GridColors.NON_COLORED_GRID_BORDER.getPaint());
                     rec.setFill(getGreyScaleColor(Main.graph[row][col]));
+                    rec.setOpacity(1);
 
                     // adding the event listener for the mouse.
                     rec.setOnMouseClicked(e -> {
+                        // When user click on grid remove the existing helper functions
                         controlPanelView.getCbShowGridNumbers().setSelected(false);
                         controlPanelView.getCbShowGridWeight().setSelected(false);
                         viewGridNumbers(false);
                         viewNodeWeights(false);
 
+                        /*LEFT MOUSE CLICK IS THE SOURCE DESTINATION MARKER*/
                         if (e.getButton() == MouseButton.PRIMARY) {
                             if (Main.graph[row][col] != 0) { // Checking if the node is blocked
                                 gridPane.getChildren().remove(startPosRec);
@@ -128,6 +140,7 @@ public class SquaredGrid extends AnchorPane {
                             } else {
                                 Utils.alertWarning("Source Node blocked! Please click a open node.");
                             }
+                            /*RIGHT MOUSE CLICK IS THE SOURCE DESTINATION MARKER*/
                         } else if (e.getButton() == MouseButton.SECONDARY) {
                             if (Main.graph[row][col] != 0) { // Checking if the node is blocked
                                 gridPane.getChildren().remove(targetPosRec);
@@ -197,57 +210,9 @@ public class SquaredGrid extends AnchorPane {
     }
 
     public void viewActualMap(boolean show) {
-        Platform.runLater(() -> {
-            if (show) {
-                actualMap = new ImageView(new Image("gui/images/map.jpg"));
-                actualMap.setFitWidth(880);
-                actualMap.setFitHeight(880);
-                actualMap.setLayoutX(10);
-                actualMap.setLayoutY(10);
-                actualMap.setPickOnBounds(true);
-                actualMap.setPreserveRatio(true);
-                actualMap.setSmooth(true);
-                actualMap.setCache(true);
-                actualMap.setOpacity(0.1);
-                getChildren().remove(gridPane);
-                getChildren().add(actualMap);
-            } else {
-                if (!getChildren().contains(gridPane)) {
-                    getChildren().remove(actualMap);
-                    getChildren().add(gridPane);
-                }
-            }
-        });
+        Platform.runLater(() -> decreaseGridOpacity(show));
     }
 
-    public static void drawPath(List<Node> finalPath) {
-        for (Node n : finalPath) {
-            Rectangle p = new Rectangle(recDimensions / 1.7, recDimensions / 1.7);
-            p.setStroke(Color.TRANSPARENT);
-            p.setFill(Color.GREEN);
-            lastDrawnPath.add(p);
-            gridPane.add(p, n.getXColNo(), n.getYRowNo());
-        }
-    }
-
-    public static void colorCheckingNeighbours(int row, int col) {
-        Circle checked = new Circle(2, Color.ROYALBLUE);
-        checked.setStroke(Color.TRANSPARENT);
-        lastCheckedNeighbours.add(checked);
-        gridPane.add(checked, col, row);
-    }
-
-    public static void removeLastDrawnPath() {
-        gridPane.getChildren().removeAll(lastDrawnPath);
-    }
-
-    public static void removeLastCheckedNeighbours() {
-        gridPane.getChildren().removeAll(lastCheckedNeighbours);
-    }
-
-    public static void removeSandTDestinations() {
-        gridPane.getChildren().removeAll(startPosRec, targetPosRec);
-    }
     // Gets the Monochrome version of colors
     private Paint getGreyScaleColor(int weight) {
         switch (weight) {
@@ -301,12 +266,50 @@ public class SquaredGrid extends AnchorPane {
 
         private final Paint paint;
 
-        private GridColors(Paint paint) {
+        GridColors(Paint paint) {
             this.paint = paint;
         }
 
         public Paint getPaint() {
             return paint;
         }
+    }
+
+    /*Drawing and erasing nodes part --------------------------------------------- */
+    private static void decreaseGridOpacity(boolean decrease) {
+        Platform.runLater(() -> {
+            for (Rectangle box : gridBoxes) {
+                box.setOpacity(decrease ? 0.0 : 1);
+            }
+        });
+    }
+
+    public static void drawPath(List<Node> finalPath) {
+        for (Node n : finalPath) {
+            Rectangle p = new Rectangle(recDimensions / 1.7, recDimensions / 1.7);
+            p.setStroke(Color.TRANSPARENT);
+            p.setFill(Color.GREEN);
+            lastDrawnPath.add(p);
+            gridPane.add(p, n.getXColNo(), n.getYRowNo());
+        }
+    }
+
+    public static void colorCheckingNeighbours(int row, int col) {
+        Circle checked = new Circle(2, Color.ROYALBLUE);
+        checked.setStroke(Color.TRANSPARENT);
+        lastCheckedNeighbours.add(checked);
+        gridPane.add(checked, col, row);
+    }
+
+    public static void removeLastDrawnPath() {
+        gridPane.getChildren().removeAll(lastDrawnPath);
+    }
+
+    public static void removeLastCheckedNeighbours() {
+        gridPane.getChildren().removeAll(lastCheckedNeighbours);
+    }
+
+    public static void removeSandTDestinations() {
+        gridPane.getChildren().removeAll(startPosRec, targetPosRec);
     }
 }

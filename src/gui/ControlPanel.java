@@ -52,6 +52,7 @@ public class ControlPanel extends AnchorPane {
         stageForGrid.setTitle("PATH FINDING ON SQUARED GRID");
         stageForGrid.setScene(new Scene(grid, 890, 890));
         stageForGrid.setResizable(false);
+        stageForGrid.setOnCloseRequest(e -> ((Stage) getScene().getWindow()).close());
         stageForGrid.show();
     }
 

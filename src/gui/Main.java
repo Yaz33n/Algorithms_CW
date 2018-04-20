@@ -63,24 +63,25 @@ public class Main extends Application {
         this.optionsGridPane.add(btnShowGrid, 0, 3, 6, 1);
         btnShowGrid.setOnAction(e -> {
 
+            // Re-Assigns the current map with the new map
             Main.graph = new DoublingHypothesis(Main.graph, doublingHypothesisVal).getMap();
-            controlPanel = new ControlPanel(useHeuristics);
+            controlPanel = new ControlPanel(useHeuristics); // Open control panel
             Scene scene = new Scene(controlPanel); // Add the startup selection option menu
-            // Adding the stylesheet for styling
-            scene.getStylesheets().add("gui/css/main.css");
+            scene.getStylesheets().add("gui/css/main.css"); // Adding the stylesheet for styling
+
             this.primaryStage.setTitle("Control Panel");
             this.primaryStage.setScene(scene); // Sets the scene
-            this.primaryStage.show();
+            this.primaryStage.show(); // Show the scene
             this.primaryStage.setOnCloseRequest(e1 -> controlPanel.getStageForGraph().close());
         });
 
-        Label helperTitle = new Label("Select the grid size and on/off Heuristics");
+        Label helperTitle = new Label("Select the grid size and toggle Heuristics");
         helperTitle.setId("startup_HelperText");
         GridPane.setMargin(helperTitle, new Insets(0, 10, 0, 10));
         this.optionsGridPane.add(helperTitle, 0, 0, 6, 1);
 
         // Checkbox for selecting the heuristic toggle
-        CheckBox toggleHeuristics = new CheckBox("Heuristics ON/OFF");
+        CheckBox toggleHeuristics = new CheckBox("Use Heuristics (Faster)");
         toggleHeuristics.setId("startup_cbToggleHeuristics");
         GridPane.setMargin(toggleHeuristics, new Insets(10, 10, 10, 10));
         this.optionsGridPane.add(toggleHeuristics, 1, 2, 4, 1);
