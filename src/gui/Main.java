@@ -13,6 +13,13 @@ import javafx.stage.Stage;
 import java.util.Arrays;
 import java.util.stream.IntStream;
 
+/**
+ * Author : Mohomad Yazeen Thariq
+ * 
+ * PathFinding algorithm coursework.
+ * Algorithm used: A star (A*)
+ * Last Edited : 2018/04/20
+ */
 public class Main extends Application {
 
     private Stage primaryStage;
