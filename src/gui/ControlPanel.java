@@ -250,7 +250,7 @@ public class ControlPanel extends AnchorPane {
 
         /*The User will choose whether use heuristics or use the exhaustive search.*/
         /*The user will choose the graph zoom level(Doubling hypothesis value)*/
-        /*Clear the existing path or use different colors to each path. TODO*/
+        /*Clears the existing path from the previous run */
 
         int sY, sX, tY, tX, len = Main.graph.length;
 
@@ -260,14 +260,14 @@ public class ControlPanel extends AnchorPane {
             tY = Integer.parseInt(txtTargetRow.getText());
             tX = Integer.parseInt(txtTargetCol.getText());
 
-            if (sY + sX + tY + tX == 0) {
+            if ((sY + sX) - (tY + tX) == 0) {
                 Utils.alertInfo("Oops, you're in the same node as the Source node!");
                 return;
             } else if (sY >= len || sY < 0 || sX >= len || sX < 0) {
                 throw new UnsupportedOperationException();
             } else if (tY >= len || tY < 0 || tX >= len || tX < 0) {
                 throw new UnsupportedOperationException();
-            } else if(Main.graph[sY][sX] == 0 || Main.graph[tY][tX] == 0) {
+            } else if (Main.graph[sY][sX] == 0 || Main.graph[tY][tX] == 0) {
                 Utils.alertInfo("Oops, one of the selected nodes is blocked!");
                 return;
             }
