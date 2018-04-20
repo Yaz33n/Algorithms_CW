@@ -289,6 +289,11 @@ public class ControlPanel extends AnchorPane {
         /* Record the elapsed time in milliseconds. */
         final double elapsedTimeMS = Utils.elapsedTimeMS(startTime_MS);
 
+        // Memory Analysis
+        // Runtime runtime = Runtime.getRuntime();
+        // runtime.gc();
+        // long memory = runtime.totalMemory() - runtime.freeMemory(); // Record cleared amount
+
         // For efficient string concatenating.
         StringBuilder sb = new StringBuilder();
         // Sets the final G cost and the elapsed time to solve the problem
@@ -296,6 +301,7 @@ public class ControlPanel extends AnchorPane {
                 .append("\nElapsed Time s: ").append(String.format("%.2f", elapsedTimeMS / 1000.0))
                 .append("\nFinal G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
                 .append("\nExhaustive Search: ").append(!useHeuristics)
+                // .append("\nUsed memory in megabytes: ").append(memory / (1024L * 1024L))
                 .append("\nBlue Dots: ").append("The checked neighbouring nodes.")
                 .append("\nGreen Boxes: ").append("The final shortest path including start and target.")
                 .append("\nPath Through Backwards: ");
