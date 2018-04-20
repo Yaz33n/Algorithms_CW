@@ -292,18 +292,19 @@ public class ControlPanel extends AnchorPane {
         /*Find the shortest path.*/
         as.findShortestPath();
         /* Record the elapsed time in milliseconds. */
-        final long elapsedTime = Utils.elapsedTimeMS(startTime_Nano);
+        final double elapsedTimeMS = Utils.elapsedTimeMS(startTime_Nano);
 
         // For efficient string concatenating.
         StringBuilder sb = new StringBuilder();
         // Sets the final G cost and the elapsed time to solve the problem
-        sb.append("Elapsed Time: ").append(elapsedTime).append("ms")
+        sb.append("Elapsed Time ms: ").append(String.format("%.2f", elapsedTimeMS)).append("ms")
+                .append("\nElapsed Time s: ").append(String.format("%.2f", elapsedTimeMS / 1000.0))
                 .append("\nFinal G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
                 .append("\nExhaustive Search: ").append(!useHeuristics)
                 .append("\nPath Through Backwards: ");
 
         for (Node n : as.getFinalPathNodes()) // Get reconstructed path list and show
-            sb.append("-> ").append(n.getYRowNo()).append(",").append(n.getXColNo());
+            sb.append(" -> ").append(n.getYRowNo()).append(",").append(n.getXColNo());
 
         resultText.setText(""); // Clear the existing text.
         resultText.setText(sb.toString()); // Set the new run results.
