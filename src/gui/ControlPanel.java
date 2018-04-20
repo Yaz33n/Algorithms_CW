@@ -1,19 +1,16 @@
 package gui;
 
-import algo.PathFindingAlgorithm;
 import algo.Node;
+import algo.PathFindingAlgorithm;
 import javafx.scene.Scene;
 import javafx.scene.control.*;
 import javafx.scene.layout.AnchorPane;
-import javafx.scene.paint.Color;
-import javafx.scene.paint.Paint;
-import javafx.scene.text.Font;
 import javafx.stage.Stage;
 import javafx.stage.StageStyle;
 
 public class ControlPanel extends AnchorPane {
 
-    /*GUI COMPONENTS*/
+    /*GUI COMPONENTS DECLARATION*/
     private static Stage stageForGrid;
     private static Label lblTitle, lblSource, lblTarget, lblMetrics, lblResult;
     private static TextField txtSourceRow, txtSourceCol, txtTargetRow, txtTargetCol;
@@ -22,6 +19,7 @@ public class ControlPanel extends AnchorPane {
     private static CheckBox cbShowGridNumbers, cbShowGridWeight, cbShowActualMap, cbShowGridColored;
     private static Separator spInputs, spOperations;
     private static Button btnReset, btnFSP;
+    /*END GUI COMPONENTS DECLARATION*/
 
     private static SquaredGrid grid;
     private static boolean useHeuristics;

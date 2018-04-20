@@ -18,8 +18,8 @@ public class Main extends Application {
     private Stage primaryStage;
     private GridPane optionsGridPane;
     private ControlPanel controlPanel;
-    private boolean useHeuristics = false;
-    private int doublingHypothesisVal = 1;
+    private boolean useHeuristics = false /*Default*/;
+    private int doublingHypothesisVal = 1 /*Default*/;
 
     @Override
     public void start(Stage primaryStage) {
@@ -61,8 +61,8 @@ public class Main extends Application {
         btnShowGrid.setId("startup_btnShowGrid");
         GridPane.setMargin(btnShowGrid, new Insets(10, 20, 20, 20));
         this.optionsGridPane.add(btnShowGrid, 0, 3, 6, 1);
-        btnShowGrid.setOnAction(e -> {
 
+        btnShowGrid.setOnAction(e -> {
             // Re-Assigns the current map with the new map
             Main.graph = new DoublingHypothesis(Main.graph, doublingHypothesisVal).getMap();
             controlPanel = new ControlPanel(useHeuristics); // Open control panel
@@ -183,6 +183,7 @@ public class Main extends Application {
         }
 
         /* Utils */
+        @SuppressWarnings("unused")
         private void print() {
             zoomedArray = getMap();
             for (int[] a : zoomedArray) {
