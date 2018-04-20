@@ -69,23 +69,17 @@ public class ControlPanel extends AnchorPane {
         lblSource.setLayoutY(101.0); // Sets the element in Y axis
 
         lblTarget = new Label("TARGET DESTINATION");
-        lblTarget.setPrefSize(134.0, 26.0);
-        lblTarget.setFont(new Font(/*"Consolas Bold",*/ 13.0)); // Setting font size
-        lblTarget.setTextFill(Color.WHITE); // Setting label font color
+        lblTarget.setId("controlPanel_lblTarget");
         lblTarget.setLayoutX(315.0); // Sets the element in X axis
         lblTarget.setLayoutY(101.0); // Sets the element in Y axis
 
         lblMetrics = new Label("Select a distance based metric: "); // Creates a new label with text
-        lblMetrics.setPrefSize(258.0, 20.0);
-        lblMetrics.setFont(new Font("System", 15.0)); // Setting font & size
-        lblMetrics.setTextFill(Color.WHITE); // Setting label font color
+        lblMetrics.setId("controlPanel_lblMetrics");
         lblMetrics.setLayoutX(29.0); // Sets the element in X axis
         lblMetrics.setLayoutY(156.0); // Sets the element in Y axis
 
         lblResult = new Label("RESULT");
-        lblResult.setPrefSize(66.0, 26.0);
-        lblResult.setFont(new Font("Consolas Bold", 16.0)); // Setting font & size
-        lblResult.setTextFill(Color.WHITE); // Setting label font color
+        lblResult.setId("controlPanel_lblResult");
         lblResult.setLayoutX(30.0); // Sets the element in X axis
         lblResult.setLayoutY(331.0); // Sets the element in Y axis
 
@@ -94,25 +88,19 @@ public class ControlPanel extends AnchorPane {
     private void initRadioButtons() {
 
         rbManhattan = new RadioButton("Manhattan"); // Creates the radio button
-        rbManhattan.setPrefSize(87.0, 28.0); // Setting the preferred sizes
+        rbManhattan.setId("controlPanel_rbManhattan");
         rbManhattan.setLayoutX(250.0); // Sets the element in X axis
         rbManhattan.setLayoutY(152.0); // Sets the element in Y axis
-        rbManhattan.setFont(new Font(13));
-        rbManhattan.setTextFill(Paint.valueOf("#1aff00")); // Change the color in radio button text
 
         rbEuclidean = new RadioButton("Euclidean"); // Creates the radio button
-        rbEuclidean.setPrefSize(87.0, 28.0); // Setting the preferred sizes
+        rbEuclidean.setId("controlPanel_rbEuclidean");
         rbEuclidean.setLayoutX(365.0); // Sets the element in X axis
         rbEuclidean.setLayoutY(152.0); // Sets the element in Y axis
-        rbEuclidean.setFont(new Font(13));
-        rbEuclidean.setTextFill(Paint.valueOf("#ff8686")); // Change the color in radio button text
 
         rbChebyshev = new RadioButton("Chebyshev"); // Creates the radio button
-        rbChebyshev.setPrefSize(87.0, 28.0); // Setting the preferred sizes
+        rbChebyshev.setId("controlPanel_rbChebyshev");
         rbChebyshev.setLayoutX(470.0); // Sets the element in X axis
         rbChebyshev.setLayoutY(152.0); // Sets the element in Y axis
-        rbChebyshev.setFont(new Font(13));
-        rbChebyshev.setTextFill(Paint.valueOf("#ffcb3e")); // Change the color in radio button text
 
         ToggleGroup toggleGMetrics = new ToggleGroup();
         toggleGMetrics.getToggles().addAll(rbManhattan, rbEuclidean, rbChebyshev); // Adding to radio buttons group
@@ -124,7 +112,6 @@ public class ControlPanel extends AnchorPane {
             rbEuclidean.setDisable(true);
             rbChebyshev.setDisable(true);
         }
-
     }
 
     private void initTextBoxes() {
@@ -318,7 +305,6 @@ public class ControlPanel extends AnchorPane {
         resultText.setText(sb.toString()); // Set the new run results.
 
         SquaredGrid.drawPath(as.getFinalPathNodes());
-
     }
 
     private PathFindingAlgorithm.Heuristic getHeuType() {
@@ -364,5 +350,4 @@ public class ControlPanel extends AnchorPane {
     public Stage getStageForGraph() {
         return stageForGrid;
     }
-
 }

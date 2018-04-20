@@ -4,7 +4,7 @@ import javafx.scene.control.Alert;
 
 public class Utils {
 
-    /* DIVIDE NanoSeconds from this CONSTANT to get the MilliSeconds */
+    /* DIVIDE MilliSeconds from this CONSTANT to get the Seconds */
     private static final double SECONDS = 1000.0;
 
     public static void alertWarning(String m) {
