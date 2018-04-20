@@ -137,11 +137,12 @@
     -fx-pref-width: 245;
     -fx-pref-height: 42;
     -fx-font-weight: Bolder;
+    -fx-border-radius: 3;
 }
 
 #controlPanel_btnFSP:hover {
-    -fx-scale-y: 1.1;
-    -fx-scale-x: 1.1;
+    -fx-scale-y: 1.01;
+    -fx-scale-x: 1.01;
 }
 
 #controlPanel_cbEFs {
