@@ -242,7 +242,7 @@ public class ControlPanel extends AnchorPane {
         txtTargetCol.setText("");
         txtTargetRow.setText("");
 
-        resultText.setText("Click Left Mouse Button for entering \nSource Node/Destination &" +
+        resultText.setText("Click Left Mouse Button for entering \nSource Destination Node &" +
                 " Click Right Mouse Button for \nentering the Target Destination Node.");
 
         SquaredGrid.removeLastDrawnPath();
