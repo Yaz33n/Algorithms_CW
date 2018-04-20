@@ -267,7 +267,7 @@ public class ControlPanel extends AnchorPane {
         /*The user will choose the graph zoom level(Doubling hypothesis value)*/
         /*Clear the existing path or use different colors to each path. TODO*/
 
-        int sY, sX, tY, tX;
+        int sY, sX, tY, tX, len = Main.graph.length;
 
         try {
             sY = Integer.parseInt(txtSourceRow.getText());
@@ -278,8 +278,14 @@ public class ControlPanel extends AnchorPane {
             if (sY + sX + tY + tX == 0) {
                 Utils.alertInfo("Oops, you're in the same node as the Source node!");
                 return;
-            } // TODO Check for negatives and Over lengthy values
-
+            } else if (sY >= len || sY < 0 || sX >= len || sX < 0) {
+                throw new UnsupportedOperationException();
+            } else if (tY >= len || tY < 0 || tX >= len || tX < 0) {
+                throw new UnsupportedOperationException();
+            } else if(Main.graph[sY][sX] == 0 || Main.graph[tY][tX] == 0) {
+                Utils.alertInfo("Oops, one of the selected nodes is blocked!");
+                return;
+            }
         } catch (NumberFormatException | UnsupportedOperationException e1) {
             Utils.alertWarning("The Coordinates either out of Range or Invalid Characters.");
             return;
@@ -301,6 +307,8 @@ public class ControlPanel extends AnchorPane {
                 .append("\nElapsed Time s: ").append(String.format("%.2f", elapsedTimeMS / 1000.0))
                 .append("\nFinal G Cost: ").append(as.getMatrix()[tY][tX].getGCost())
                 .append("\nExhaustive Search: ").append(!useHeuristics)
+                .append("\nBlue Dots: ").append("The checked neighbouring nodes.")
+                .append("\nGreen Boxes: ").append("The final shortest path including start and target.")
                 .append("\nPath Through Backwards: ");
 
         for (Node n : as.getFinalPathNodes()) // Get reconstructed path list and show

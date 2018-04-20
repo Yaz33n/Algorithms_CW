@@ -103,7 +103,7 @@ public class PathFindingAlgorithm {
             for (Node neighbour : currentNode.getNeighbours()) {
                 if (closedSet.contains(neighbour)) continue; // No need to check this.
                 if (!neighbour.isVisited() && !neighbour.isBlocked()) {
-
+                    // Coloring the visiting neighbouring nodes. takes about 10ms to color
                     SquaredGrid.colorCheckingNeighbours(neighbour.getYRowNo(), neighbour.getXColNo());
                     // Update the GCost when moving.
                     /*Get the CurrentNodeGCost and and add the Next Node Weight as the Distance*/
